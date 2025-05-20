@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="layout/main :: html(~{::title}, ~{::section})">
+<head>
+    <title>Administration - Gestion des Réservations</title>
+</head>
+<body>
+    <section th:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-clipboard-list me-2"></i>Gestion des Réservations</h1>
+            <a href="/admin/shows" class="btn btn-outline-primary">
+                <i class="fas fa-theater-masks me-2"></i>Gérer les Spectacles
+            </a>
+        </div>
+        
+        <!-- Messages d'alerte -->
+        <div th:if="${errorMessage}" class="alert alert-danger mb-4">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorMessage}">Erreur</span>
+        </div>
+        
+        <div th:if="${successMessage}" class="alert alert-success mb-4">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${successMessage}">Succès</span>
+        </div>
+        
+        <!-- Aucune réservation -->
+        <div th:if="${#lists.isEmpty(reservations)}" class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>Aucune réservation n'a été trouvée dans la base de données.
+        </div>
+        
+        <!-- Tableau des réservations -->
+        <div th:unless="${#lists.isEmpty(reservations)}" class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-list me-2"></i>Liste des Réservations</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Code</th>
+                                <th>Utilisateur</th>
+                                <th>Spectacle</th>
+                                <th>Siège</th>
+                                <th>Date</th>
+                                <th>Prix</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="reservation : ${reservations}">
+                                <td th:text="${reservation.id}">1</td>
+                                <td><span class="badge bg-dark" th:text="${reservation.confirmationCode}">ABC123</span></td>
+                                <td th:text="${reservation.user.username}">user@example.com</td>
+                                <td th:text="${reservation.show.title}">Titre du spectacle</td>
+                                <td th:text="${reservation.seat.number}">A1</td>
+                                <td th:text="${#temporals.format(reservation.reservationDate, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
+                                <td th:text="${reservation.totalPrice} + ' €'">50.00 €</td>
+                                <td>
+                                    <span th:if="${reservation.paymentConfirmed}" class="badge bg-success">Confirmé</span>
+                                    <span th:unless="${reservation.paymentConfirmed}" class="badge bg-warning text-dark">En attente</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a th:href="@{/admin/reservations/{id}(id=${reservation.id})}" class="btn btn-info">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <form th:if="${!reservation.paymentConfirmed}" th:action="@{/admin/reservations/{id}/confirm(id=${reservation.id})}" method="post" style="display: inline;">
+                                            <button type="submit" class="btn btn-success" title="Confirmer paiement">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </form>
+                                        <form th:action="@{/admin/reservations/{id}/cancel(id=${reservation.id})}" method="post" style="display: inline;">
+                                            <button type="submit" class="btn btn-danger" title="Annuler réservation"
+                                                    onclick="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span><strong th:text="${reservations.size()}">0</strong> réservation(s) trouvée(s)</span>
+                    <small class="text-muted">Dernière mise à jour: <span th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}">01/01/2025 12:00</span></small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="alert alert-info mt-4">
+            <i class="fas fa-lightbulb me-2"></i>
+            <strong>Conseil:</strong> Cette page vous permet de voir toutes les réservations enregistrées dans la base de données.
+        </div>
+    </section>
+</body>
+</html>

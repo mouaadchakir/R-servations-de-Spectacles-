@@ -133,9 +133,9 @@
                                         <tbody>
                                             <tr th:each="reservation : ${reservations}">
                                                 <td th:text="${reservation.show.title}">Show Title</td>
-                                                <td th:text="${#temporals.format(reservation.show.datetime, 'dd MMM yyyy HH:mm')}">Show Date</td>
+                                                <td th:text="${#temporals.format(reservation.show.date, 'dd MMM yyyy HH:mm')}">Show Date</td>
                                                 <td>
-                                                    <span th:text="${reservation.seat.row + '-' + reservation.seat.number}"></span>
+                                                    <span th:text="${reservation.seat.seatNumber}"></span>
                                                 </td>
                                                 <td th:text="${'$' + #numbers.formatDecimal(reservation.totalPrice, 1, 2)}">$0.00</td>
                                                 <td>

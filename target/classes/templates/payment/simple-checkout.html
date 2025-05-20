@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Paiement Simplifié</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .confirmation-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .ticket-info {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .payment-details {
+            background-color: #f0f7ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .total-box {
+            background-color: #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">SpectaTicket</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/shows">Spectacles</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">
+                            <i class="fas fa-user me-1"></i> Profil
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5 confirmation-container">
+        <h1 class="mb-4 text-center">Confirmation de Paiement</h1>
+        
+        <!-- Messages d'alerte -->
+        <div th:if="${errorMessage}" class="alert alert-danger mb-4">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorMessage}">Erreur</span>
+        </div>
+        
+        <div th:if="${successMessage}" class="alert alert-success mb-4">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${successMessage}">Succès</span>
+        </div>
+        
+        <!-- Détails du billet -->
+        <div class="ticket-info">
+            <h3 class="mb-3"><i class="fas fa-ticket-alt me-2"></i>Détails de la Réservation</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Spectacle:</strong> <span th:text="${show?.title}">Titre du spectacle</span></p>
+                    <p><strong>Date:</strong> <span th:text="${#temporals.format(show?.date, 'dd MMMM yyyy HH:mm')}">Date</span></p>
+                    <p><strong>Lieu:</strong> <span th:text="${show?.location}">Lieu</span></p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Siège:</strong> <span th:text="${seat?.number}">A1</span></p>
+                    <p><strong>Catégorie:</strong> <span th:text="${seat?.category}">VIP</span></p>
+                    <p><strong>Numéro de réservation:</strong> <span th:text="${reservation?.confirmationCode}">R12345</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Détails du paiement -->
+        <div class="payment-details">
+            <h3 class="mb-3"><i class="fas fa-credit-card me-2"></i>Détails du Paiement</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Prix du billet:</strong> <span th:text="${amount} + ' €'">50.00 €</span></p>
+                    <p><strong>Frais de service:</strong> <span>0.00 €</span></p>
+                    <p><strong>TVA (incluse):</strong> <span>Incluse</span></p>
+                </div>
+                <div class="col-md-6">
+                    <div class="total-box">
+                        <h4 class="mb-0">Total à payer: <span class="float-end" th:text="${amount} + ' €'">50.00 €</span></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Formulaire de confirmation -->
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title mb-4"><i class="fas fa-lock me-2"></i>Confirmer votre paiement</h3>
+                <p class="card-text mb-4">
+                    Pour finaliser votre réservation, veuillez confirmer ci-dessous. <br>
+                    <strong>Note:</strong> En mode développement, aucun paiement réel ne sera effectué.
+                </p>
+                
+                <form th:action="@{/simple-payment/{id}/confirm(id=${reservation.id})}" method="post">
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-check-circle me-2"></i>Confirmer le paiement
+                        </button>
+                        <a href="/" class="btn btn-outline-secondary">
+                            <i class="fas fa-times-circle me-2"></i>Annuler
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>SpectaTicket</h5>
+                    <p>Votre plateforme de réservation de spectacles</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>&copy; 2025 SpectaTicket. Tous droits réservés.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

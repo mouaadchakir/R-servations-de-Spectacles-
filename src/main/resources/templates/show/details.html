@@ -37,7 +37,7 @@
                         </div>
                         
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end" sec:authorize="isAuthenticated()">
-                            <a th:href="@{/shows/{id}/reserve(id=${show.id})}" class="btn btn-primary btn-lg">
+                            <a th:href="@{/ultra-simple/reserve/{id}(id=${show.id})}" class="btn btn-primary btn-lg">
                                 <i class="fas fa-ticket-alt me-2"></i>Réserver des places
                             </a>
                         </div>

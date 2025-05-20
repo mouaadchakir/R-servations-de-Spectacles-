@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="layout/main :: html(~{::title}, ~{::section})">
+<head>
+    <title>Administration - Détails de Réservation</title>
+</head>
+<body>
+    <section th:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-ticket-alt me-2"></i>Détails de la Réservation</h1>
+            <a href="/admin/reservations" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+            </a>
+        </div>
+        
+        <!-- Messages d'alerte -->
+        <div th:if="${errorMessage}" class="alert alert-danger mb-4">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorMessage}">Erreur</span>
+        </div>
+        
+        <div th:if="${successMessage}" class="alert alert-success mb-4">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${successMessage}">Succès</span>
+        </div>
+        
+        <!-- Informations de la réservation -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Informations de la Réservation</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">ID:</div>
+                            <div class="col-md-8" th:text="${reservation.id}">1</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">Code de confirmation:</div>
+                            <div class="col-md-8">
+                                <span class="badge bg-dark" th:text="${reservation.confirmationCode}">ABC123</span>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">Date de réservation:</div>
+                            <div class="col-md-8" th:text="${#temporals.format(reservation.reservationDate, 'dd MMMM yyyy HH:mm')}">1 Janvier 2025 12:00</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">Prix total:</div>
+                            <div class="col-md-8 text-primary fw-bold" th:text="${reservation.totalPrice} + ' €'">50.00 €</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">Statut du paiement:</div>
+                            <div class="col-md-8">
+                                <span th:if="${reservation.paymentConfirmed}" class="badge bg-success">Confirmé</span>
+                                <span th:unless="${reservation.paymentConfirmed}" class="badge bg-warning text-dark">En attente</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-theater-masks me-2"></i>Détails du Spectacle</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">Titre:</div>
+                            <div class="col-md-8" th:text="${reservation.show.title}">Titre du spectacle</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">Date:</div>
+                            <div class="col-md-8" th:text="${#temporals.format(reservation.show.date, 'dd MMMM yyyy HH:mm')}">1 Janvier 2025 20:00</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">Lieu:</div>
+                            <div class="col-md-8" th:text="${reservation.show.location}">Lieu du spectacle</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">Catégorie:</div>
+                            <div class="col-md-8" th:text="${reservation.show.category}">Catégorie</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">Siège:</div>
+                            <div class="col-md-8">
+                                <span th:text="${reservation.seat.number}">A1</span>
+                                (<span th:text="${reservation.seat.category}">Standard</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-user me-2"></i>Informations de l'Utilisateur</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">ID:</div>
+                            <div class="col-md-8" th:text="${reservation.user.id}">1</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">Nom:</div>
+                            <div class="col-md-8" th:text="${reservation.user.firstName + ' ' + reservation.user.lastName}">Prénom Nom</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 fw-bold">Email:</div>
+                            <div class="col-md-8" th:text="${reservation.user.email}">user@example.com</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-cogs me-2"></i>Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <form th:if="${!reservation.paymentConfirmed}" th:action="@{/admin/reservations/{id}/confirm(id=${reservation.id})}" method="post">
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="fas fa-check me-2"></i>Confirmer le paiement
+                                </button>
+                            </form>
+                            <form th:action="@{/admin/reservations/{id}/cancel(id=${reservation.id})}" method="post">
+                                <button type="submit" class="btn btn-danger w-100" 
+                                        onclick="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');">
+                                    <i class="fas fa-times me-2"></i>Annuler la réservation
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

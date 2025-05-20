@@ -45,6 +45,12 @@ public class User implements UserDetails {
     private LocalDateTime registrationDate;
 
     private boolean active;
+    
+    @Column(name = "profile_image_path")
+    private String profileImagePath;
+    
+    @Column(name = "bio", length = 500)
+    private String bio;
 
     // Spring Security UserDetails implementation
     @Override

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="layout/main :: html(~{::title}, ~{::section})">
+<head>
+    <title>SpectaTicket - Mes Réservations</title>
+</head>
+<body>
+    <section th:fragment="content">
+        <h1 class="mb-4">
+            <i class="fas fa-ticket-alt me-2"></i>Mes Réservations
+        </h1>
+        
+        <!-- Message d'erreur -->
+        <div th:if="${errorMessage}" class="alert alert-warning mb-4">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span th:text="${errorMessage}">Message d'erreur</span>
+        </div>
+        
+        <!-- Aucune réservation -->
+        <div th:if="${#lists.isEmpty(reservations)}" class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>Vous n'avez pas encore de réservations.
+            <a th:href="@{/shows}" class="alert-link">Parcourir les spectacles disponibles</a>.
+        </div>
+        
+        <!-- Liste des réservations -->
+        <div th:unless="${#lists.isEmpty(reservations)}" class="row">
+            <div class="col-md-6 mb-4" th:each="reservation : ${reservations}">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-ticket-alt me-2"></i>
+                            <span th:text="${reservation.show.title}">Titre du spectacle</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p>
+                            <strong><i class="far fa-calendar-alt me-2"></i>Date:</strong>
+                            <span th:text="${#temporals.format(reservation.show.date, 'dd MMMM yyyy HH:mm')}">Date</span>
+                        </p>
+                        <p>
+                            <strong><i class="fas fa-map-marker-alt me-2"></i>Lieu:</strong>
+                            <span th:text="${reservation.show.location}">Lieu</span>
+                        </p>
+                        <p>
+                            <strong><i class="fas fa-chair me-2"></i>Siège:</strong>
+                            <span th:text="${reservation.seat.number}">A1</span>
+                            (<span th:text="${reservation.seat.category}">Catégorie</span>)
+                        </p>
+                        <p>
+                            <strong><i class="fas fa-tag me-2"></i>Prix:</strong>
+                            <span th:text="${reservation.totalPrice} + ' €'">Prix</span>
+                        </p>
+                        <div class="alert alert-success" th:if="${reservation.paymentConfirmed}">
+                            <i class="fas fa-check-circle me-2"></i>Paiement confirmé
+                            <p class="mb-0">
+                                <small>Code de confirmation: <strong th:text="${reservation.confirmationCode}">CODE</strong></small>
+                            </p>
+                        </div>
+                        <div class="alert alert-warning" th:unless="${reservation.paymentConfirmed}">
+                            <i class="fas fa-exclamation-circle me-2"></i>Paiement en attente
+                            <p class="mb-0">
+                                <a th:href="@{/simple-payment/{id}(id=${reservation.id})}" class="alert-link">
+                                    Finaliser le paiement
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a th:href="@{/tickets/{id}(id=${reservation.id})}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-eye me-2"></i>Voir le billet
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

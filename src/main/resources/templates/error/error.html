@@ -21,6 +21,18 @@
                         </ul>
                     </div>
                     
+                    <!-- Détails de l'erreur en mode développement -->
+                    <div th:if="${errorDetails != null}" class="mt-4 text-start">
+                        <div class="card">
+                            <div class="card-header bg-danger text-white">
+                                <h5 class="mb-0">Détails de l'erreur (DÉVELOPPEMENT UNIQUEMENT)</h5>
+                            </div>
+                            <div class="card-body">
+                                <pre class="bg-dark text-white p-3" style="overflow-x: auto; max-height: 400px;" th:text="${errorDetails}">Stack trace</pre>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <a th:href="@{/}" class="btn btn-primary btn-lg">
                         <i class="fas fa-home me-2"></i>Retour à l'accueil
                     </a>

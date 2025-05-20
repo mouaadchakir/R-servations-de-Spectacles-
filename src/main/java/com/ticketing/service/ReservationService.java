@@ -19,4 +19,5 @@ public interface ReservationService {
     void cancelReservation(Long reservationId);
     List<Reservation> findUserReservationsOrdered(Long userId);
     String generateConfirmationCode();
+    List<Reservation> findAll();
 }

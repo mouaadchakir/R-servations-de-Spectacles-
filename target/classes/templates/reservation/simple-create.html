@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Réservation Simplifiée</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .reservation-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .show-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .show-image {
+            height: 200px;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .seat-item {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .seat-item:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+        }
+        .seat-item.selected {
+            background-color: #cfe2ff;
+            border-color: #0d6efd;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">SpectaTicket</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/shows">Spectacles</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">
+                            <i class="fas fa-user me-1"></i> Profil
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5 reservation-container">
+        <h1 class="mb-4 text-center">Réservation de Billet</h1>
+        
+        <!-- Messages d'alerte -->
+        <div th:if="${errorMessage}" class="alert alert-danger mb-4">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorMessage}">Erreur</span>
+        </div>
+        
+        <!-- Information du spectacle -->
+        <div class="show-card">
+            <div class="card">
+                <div class="row g-0">
+                    <div class="col-md-4 show-image">
+                        <i class="fas fa-image fa-3x text-muted"></i>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h2 class="card-title" th:if="${show}" th:text="${show.title}">Titre du spectacle</h2>
+                            <h2 class="card-title" th:unless="${show}">Spectacle #<span th:text="${showId}">ID</span></h2>
+                            
+                            <p class="card-text" th:if="${show && show.date}">
+                                <i class="far fa-calendar-alt me-2"></i>
+                                <span th:text="${#temporals.format(show.date, 'dd MMMM yyyy HH:mm')}">Date</span>
+                            </p>
+                            
+                            <p class="card-text" th:if="${show && show.location}">
+                                <i class="fas fa-map-marker-alt me-2"></i>
+                                <span th:text="${show.location}">Lieu</span>
+                            </p>
+                            
+                            <p class="card-text" th:if="${show && show.price}">
+                                <i class="fas fa-tag me-2"></i>
+                                Prix: <strong th:text="${show.price} + ' €'">50.00 €</strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sélection des sièges -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-chair me-2"></i>Sélectionnez un siège</h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${noSeats}" class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Aucun siège disponible pour ce spectacle.
+                </div>
+                
+                <form th:action="@{/simple-reservation/{id}/reserve(id=${showId})}" method="post" id="reservationForm">
+                    <div class="mb-4">
+                        <label class="form-label">Choisissez un siège disponible:</label>
+                        
+                        <div class="row">
+                            <!-- Sièges générés manuellement pour démonstration -->
+                            <div class="col-md-3 col-6">
+                                <div class="seat-item" onclick="selectSeat('1')">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="seatId" id="seat1" value="1">
+                                        <label class="form-check-label" for="seat1">
+                                            Siège A1
+                                        </label>
+                                    </div>
+                                    <div class="small text-muted">Standard</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="seat-item" onclick="selectSeat('2')">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="seatId" id="seat2" value="2">
+                                        <label class="form-check-label" for="seat2">
+                                            Siège A2
+                                        </label>
+                                    </div>
+                                    <div class="small text-muted">Standard</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="seat-item" onclick="selectSeat('3')">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="seatId" id="seat3" value="3">
+                                        <label class="form-check-label" for="seat3">
+                                            Siège B1
+                                        </label>
+                                    </div>
+                                    <div class="small text-muted">VIP</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="seat-item" onclick="selectSeat('4')">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="seatId" id="seat4" value="4">
+                                        <label class="form-check-label" for="seat4">
+                                            Siège B2
+                                        </label>
+                                    </div>
+                                    <div class="small text-muted">VIP</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check-circle me-2"></i>Réserver ce siège
+                        </button>
+                        <a href="/shows" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Retour aux spectacles
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>SpectaTicket</h5>
+                    <p>Votre plateforme de réservation de spectacles</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>&copy; 2025 SpectaTicket. Tous droits réservés.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function selectSeat(seatId) {
+            // Supprimer la classe selected de tous les éléments
+            document.querySelectorAll('.seat-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Ajouter la classe selected à l'élément cliqué
+            document.querySelector('#seat' + seatId).closest('.seat-item').classList.add('selected');
+            
+            // Sélectionner le radio
+            document.querySelector('#seat' + seatId).checked = true;
+        }
+    </script>
+</body>
+</html>

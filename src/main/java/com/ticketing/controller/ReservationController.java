@@ -47,8 +47,8 @@ public class ReservationController {
             // Create the reservation
             Reservation reservation = reservationService.createReservation(user.getId(), id, seatId);
             
-            // Redirect to payment page
-            return "redirect:/payment/" + reservation.getId();
+            // Redirect to simple payment page instead of Stripe payment
+            return "redirect:/simple-payment/" + reservation.getId();
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed to reserve seat: " + e.getMessage());
             return "redirect:/shows/" + id;

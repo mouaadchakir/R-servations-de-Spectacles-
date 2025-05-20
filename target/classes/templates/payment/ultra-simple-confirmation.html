@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmation de Réservation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .container-custom {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .success-icon {
+            font-size: 5rem;
+            color: #198754;
+            margin-bottom: 1rem;
+        }
+        .ticket-card {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px dashed #dee2e6;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .ticket-header {
+            background-color: #0d6efd;
+            color: white;
+            padding: 15px;
+            position: relative;
+        }
+        .ticket-header:before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background-size: 20px 20px;
+            background-image: radial-gradient(circle at 10px -5px, transparent 12px, white 13px);
+        }
+        .ticket-body {
+            padding: 20px;
+        }
+        .ticket-footer {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-top: 1px dashed #dee2e6;
+        }
+        .confirmation-box {
+            border: 2px solid #198754;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 2rem;
+            background-color: #d1e7dd;
+        }
+        .qr-code {
+            width: 150px;
+            height: 150px;
+            background-color: #e9ecef;
+            border: 1px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">SpectaTicket</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/shows">Spectacles</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">
+                            <i class="fas fa-user me-1"></i> Profil
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5 container-custom">
+        <div class="text-center mb-4">
+            <i class="fas fa-check-circle success-icon"></i>
+            <h1 class="mb-3">Réservation Confirmée !</h1>
+            <p class="lead mb-4">Votre paiement a été traité avec succès et votre réservation est confirmée.</p>
+            
+            <div class="confirmation-box text-center">
+                <h4>Code de Confirmation</h4>
+                <h2 class="mb-0" th:text="${confirmationCode}">ABC123XYZ</h2>
+            </div>
+        </div>
+        
+        <!-- Ticket -->
+        <div class="ticket-card">
+            <div class="ticket-header">
+                <h2 class="mb-0">
+                    <i class="fas fa-ticket-alt me-2"></i>
+                    Votre billet
+                </h2>
+            </div>
+            <div class="ticket-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h3>Spectacle #<span th:text="${showId} ?: '2'">2</span></h3>
+                        <p class="lead">Catégorie Standard</p>
+                        
+                        <div class="row mt-4">
+                            <div class="col-sm-6">
+                                <p><strong><i class="far fa-calendar-alt me-2"></i>Date:</strong></p>
+                                <p id="eventDate">À venir</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p><strong><i class="far fa-clock me-2"></i>Heure:</strong></p>
+                                <p id="eventTime">20:00</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-sm-6">
+                                <p><strong><i class="fas fa-map-marker-alt me-2"></i>Lieu:</strong></p>
+                                <p>Salle Principale</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p><strong><i class="fas fa-chair me-2"></i>Siège:</strong></p>
+                                <p>A12 (Standard)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div class="qr-code">
+                            <i class="fas fa-qrcode fa-5x text-secondary"></i>
+                        </div>
+                        <p class="mt-2 small text-muted">Scannez ce code à l'entrée</p>
+                    </div>
+                </div>
+            </div>
+            <div class="ticket-footer text-center">
+                <p class="mb-0"><strong>Prix:</strong> <span>50.00 €</span></p>
+            </div>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0"><i class="fas fa-info-circle me-2"></i>Informations importantes</h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <i class="fas fa-envelope me-2 text-primary"></i>
+                        Un e-mail de confirmation a été envoyé à votre adresse email.
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-print me-2 text-primary"></i>
+                        Vous pouvez imprimer ce billet ou le présenter sur votre téléphone à l'entrée.
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-clock me-2 text-primary"></i>
+                        Veuillez arriver au moins 30 minutes avant le début du spectacle.
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-id-card me-2 text-primary"></i>
+                        Une pièce d'identité peut être demandée à l'entrée.
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <a href="/" class="btn btn-primary btn-lg me-2">
+                <i class="fas fa-home me-2"></i>Retour à l'accueil
+            </a>
+            <a href="/profile" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-user me-2"></i>Mon profil
+            </a>
+        </div>
+    </div>
+    
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>SpectaTicket</h5>
+                    <p>Votre plateforme de réservation de spectacles</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>&copy; 2025 SpectaTicket. Tous droits réservés.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Définir la date de l'événement à 7 jours à partir d'aujourd'hui
+        const today = new Date();
+        const eventDate = new Date(today);
+        eventDate.setDate(today.getDate() + 7);
+        
+        // Format de la date: par exemple "10 juin 2025"
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        document.getElementById('eventDate').textContent = eventDate.toLocaleDateString('fr-FR', options);
+        
+        // Heure fixe à 20h00
+        document.getElementById('eventTime').textContent = '20:00';
+    </script>
+</body>
+</html>

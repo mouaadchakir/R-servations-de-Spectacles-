@@ -134,4 +134,10 @@ public class ReservationServiceImpl implements ReservationService {
     public String generateConfirmationCode() {
         return UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<Reservation> findAll() {
+        return reservationRepository.findAll();
+    }
 }

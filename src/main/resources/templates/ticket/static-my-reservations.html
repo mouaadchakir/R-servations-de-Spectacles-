@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="layout/main :: html(~{::title}, ~{::section})">
+<head>
+    <title>SpectaTicket - Mes Réservations (Mode Statique)</title>
+</head>
+<body>
+    <section th:fragment="content">
+        <h1 class="mb-4">
+            <i class="fas fa-ticket-alt me-2"></i>Mes Réservations
+        </h1>
+        
+        <!-- Message d'erreur -->
+        <div th:if="${errorMessage}" class="alert alert-warning mb-4">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span th:text="${errorMessage}">Message d'erreur</span>
+        </div>
+        
+        <div class="alert alert-info mb-4">
+            <i class="fas fa-info-circle me-2"></i>
+            Mode d'affichage limité. Certaines fonctionnalités peuvent ne pas être disponibles.
+        </div>
+        
+        <!-- Exemples statiques de réservations -->
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-ticket-alt me-2"></i>
+                            Concert de musique classique
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p>
+                            <strong><i class="far fa-calendar-alt me-2"></i>Date:</strong>
+                            30 Mai 2025 20:00
+                        </p>
+                        <p>
+                            <strong><i class="fas fa-map-marker-alt me-2"></i>Lieu:</strong>
+                            Salle Mozart
+                        </p>
+                        <p>
+                            <strong><i class="fas fa-chair me-2"></i>Siège:</strong>
+                            A12 (Premium)
+                        </p>
+                        <p>
+                            <strong><i class="fas fa-tag me-2"></i>Prix:</strong>
+                            45.00 €
+                        </p>
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>Paiement confirmé
+                            <p class="mb-0">
+                                <small>Code de confirmation: <strong>ABC123XYZ</strong></small>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-outline-primary w-100 disabled">
+                            <i class="fas fa-eye me-2"></i>Voir le billet (Non disponible en mode limité)
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-ticket-alt me-2"></i>
+                            Théâtre contemporain
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p>
+                            <strong><i class="far fa-calendar-alt me-2"></i>Date:</strong>
+                            15 Juin 2025 19:30
+                        </p>
+                        <p>
+                            <strong><i class="fas fa-map-marker-alt me-2"></i>Lieu:</strong>
+                            Théâtre National
+                        </p>
+                        <p>
+                            <strong><i class="fas fa-chair me-2"></i>Siège:</strong>
+                            B8 (VIP)
+                        </p>
+                        <p>
+                            <strong><i class="fas fa-tag me-2"></i>Prix:</strong>
+                            65.00 €
+                        </p>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-circle me-2"></i>Paiement en attente
+                            <p class="mb-0">
+                                <a href="#" class="alert-link disabled">
+                                    Finaliser le paiement (Non disponible en mode limité)
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-outline-primary w-100 disabled">
+                            <i class="fas fa-eye me-2"></i>Voir le billet (Non disponible en mode limité)
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="alert alert-primary mt-4">
+            <i class="fas fa-info-circle me-2"></i>
+            En mode limité, les exemples de réservations affichés ci-dessus sont fictifs et ne correspondent pas à vos réservations réelles.
+            <div class="mt-3">
+                <a href="/" class="btn btn-outline-primary me-2">
+                    <i class="fas fa-home me-2"></i>Retour à l'accueil
+                </a>
+                <a href="/shows" class="btn btn-outline-primary">
+                    <i class="fas fa-theater-masks me-2"></i>Voir les spectacles
+                </a>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
