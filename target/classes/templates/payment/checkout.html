@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="layout/main :: html(~{::title}, ~{::section})">
+<head>
+    <title>SpectaTicket - Paiement</title>
+</head>
+<body>
+    <section th:fragment="content">
+        <h2 class="mb-4">
+            <i class="fas fa-credit-card me-2"></i>Paiement
+        </h2>
+        
+        <div class="row">
+            <!-- Payment Form -->
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Informations de paiement</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="stripe-form">
+                            <form id="payment-form" th:data-success-url="@{/payment/success(reservation_id=${reservation.id})}">
+                                <input type="hidden" id="stripe-public-key" th:value="${stripePublicKey}">
+                                <input type="hidden" id="client-secret" th:value="${clientSecret}">
+                                
+                                <div class="mb-4">
+                                    <label for="card-element" class="form-label">Carte de crédit</label>
+                                    <div id="card-element" class="form-control"></div>
+                                    <div id="card-errors" class="text-danger mt-2"></div>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button id="submit-button" class="btn btn-primary">
+                                        <i class="fas fa-lock me-2"></i>Payer maintenant
+                                        <span th:text="${reservation.totalPrice + ' €'}">0.00 €</span>
+                                    </button>
+                                    <div id="loading-indicator" class="text-center mt-3 d-none">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Chargement...</span>
+                                        </div>
+                                        <p class="mt-2">Traitement du paiement en cours...</p>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Résumé de commande</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6 th:text="${reservation.show.title}">Titre du spectacle</h6>
+                        <p class="text-muted" th:text="${#temporals.format(reservation.show.date, 'dd/MM/yyyy HH:mm')}">Date du spectacle</p>
+                        
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Place:</span>
+                                <span th:text="${reservation.seat.seatNumber}">A-12</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Catégorie:</span>
+                                <span class="badge bg-primary" th:text="${reservation.seat.category}"
+                                      th:classappend="${
+                                        reservation.seat.category.name() == 'STANDARD' ? 'badge-standard' :
+                                        reservation.seat.category.name() == 'PREMIUM' ? 'badge-premium' :
+                                        reservation.seat.category.name() == 'VIP' ? 'badge-vip' : ''
+                                      }">Catégorie</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Lieu:</span>
+                                <span th:text="${reservation.show.location}">Lieu</span>
+                            </li>
+                        </ul>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>Le paiement sera traité de manière sécurisée par Stripe.
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center fw-bold">
+                            <span>Total:</span>
+                            <span class="text-primary fs-4" th:text="${reservation.totalPrice + ' €'}">0.00 €</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <script th:fragment="scripts">
+        // Stripe API will be loaded from the CDN in main.js
+        document.write('<script src="https://js.stripe.com/v3/"><\/script>');
+    </script>
+</body>
+</html>

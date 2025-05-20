@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="layout/main :: html(~{::title}, ~{::section})">
+<head>
+    <title th:text="${show.id == null ? 'Créer un spectacle' : 'Modifier le spectacle'}">SpectaTicket - Administration</title>
+</head>
+<body>
+    <section th:fragment="content">
+        <h2 class="mb-4">
+            <i class="fas fa-theater-masks me-2"></i>
+            <span th:text="${show.id == null ? 'Créer un nouveau spectacle' : 'Modifier le spectacle'}">Gestion de spectacle</span>
+        </h2>
+        
+        <div class="card">
+            <div class="card-body">
+                <form th:action="${show.id == null ? '/admin/shows/create' : '/admin/shows/' + show.id + '/edit'}" 
+                      method="post" 
+                      enctype="multipart/form-data" 
+                      th:object="${show}">
+                    
+                    <input type="hidden" th:field="*{id}" th:if="${show.id != null}">
+                    
+                    <!-- General Information -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <h5 class="card-title">Informations générales</h5>
+                            <hr>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="title" class="form-label">Titre du spectacle</label>
+                            <input type="text" class="form-control" id="title" th:field="*{title}" required>
+                            <div class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="category" class="form-label">Catégorie</label>
+                            <select class="form-select" id="category" th:field="*{category}" required>
+                                <option value="">-- Sélectionner une catégorie --</option>
+                                <option th:each="cat : ${categories}" 
+                                        th:value="${cat}" 
+                                        th:text="${cat.name()}">Catégorie</option>
+                            </select>
+                            <div class="text-danger" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></div>
+                        </div>
+                        
+                        <div class="col-md-12 mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" th:field="*{description}" rows="4" required></textarea>
+                            <div class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Date, Location, Price -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <h5 class="card-title">Date, lieu et prix</h5>
+                            <hr>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="date" class="form-label">Date et heure</label>
+                            <input type="datetime-local" class="form-control" id="date" th:field="*{date}" required>
+                            <div class="text-danger" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="location" class="form-label">Lieu</label>
+                            <input type="text" class="form-control" id="location" th:field="*{location}" required>
+                            <div class="text-danger" th:if="${#fields.hasErrors('location')}" th:errors="*{location}"></div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="price" class="form-label">Prix (€)</label>
+                            <input type="number" class="form-control" id="price" th:field="*{price}" step="0.01" min="0" required>
+                            <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Image Upload -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <h5 class="card-title">Image du spectacle</h5>
+                            <hr>
+                        </div>
+                        
+                        <div class="col-md-8 mb-3">
+                            <label for="imageFile" class="form-label">Ajouter une image</label>
+                            <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*">
+                            <div class="form-text">Format recommandé: JPG, PNG. Taille max: 5 MB.</div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3" th:if="${show.image != null}">
+                            <label class="form-label">Image actuelle</label>
+                            <div class="card">
+                                <img th:src="${show.image}" alt="Image du spectacle" class="img-thumbnail">
+                                <div class="card-body p-2 text-center">
+                                    <small class="text-muted">Pour changer l'image, téléchargez une nouvelle.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Seat configuration (only for new shows) -->
+                    <div class="row mb-4" th:if="${show.id == null}">
+                        <div class="col-md-12">
+                            <h5 class="card-title">Configuration des places</h5>
+                            <hr>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="rowCount" class="form-label">Nombre de rangées</label>
+                            <input type="number" class="form-control" id="rowCount" name="rowCount" value="10" min="1" max="26">
+                            <div class="form-text">Maximum 26 rangées (de A à Z)</div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="seatsPerRow" class="form-label">Places par rangée</label>
+                            <input type="number" class="form-control" id="seatsPerRow" name="seatsPerRow" value="12" min="1" max="30">
+                            <div class="form-text">Maximum 30 places par rangée</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a th:href="@{/admin/shows}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Annuler
+                        </a>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>
+                            <span th:text="${show.id == null ? 'Créer le spectacle' : 'Enregistrer les modifications'}">Enregistrer</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

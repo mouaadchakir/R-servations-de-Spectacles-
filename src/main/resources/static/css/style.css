@@ -1,0 +1,235 @@
+/* Custom styles for the ticket reservation system */
+
+/* General styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    flex: 1;
+}
+
+/* Card styles */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Show category badges and backgrounds */
+.badge-concert, .bg-category-concert {
+    background-color: #ff7b25;
+    color: white;
+}
+
+.badge-theatre, .bg-category-theatre {
+    background-color: #6c757d;
+    color: white;
+}
+
+.badge-cinema, .bg-category-cinema {
+    background-color: #dc3545;
+    color: white;
+}
+
+.badge-comedy, .bg-category-comedy {
+    background-color: #ffc107;
+    color: #333;
+}
+
+.badge-dance, .bg-category-dance {
+    background-color: #9c27b0;
+    color: white;
+}
+
+.badge-other, .bg-category-other {
+    background-color: #17a2b8;
+    color: white;
+}
+
+/* Seat chart styles */
+.seat-chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.seat-row {
+    display: flex;
+    gap: 5px;
+}
+
+.seat {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.seat-standard {
+    background-color: #007bff;
+    color: white;
+}
+
+.seat-premium {
+    background-color: #6f42c1;
+    color: white;
+}
+
+.seat-vip {
+    background-color: #dc3545;
+    color: white;
+}
+
+.seat.reserved {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+.seat.selected {
+    background-color: #28a745;
+    transform: scale(1.1);
+}
+
+/* Ticket styles */
+.ticket {
+    border: 2px dashed #6c757d;
+    border-radius: 15px;
+    padding: 20px;
+    position: relative;
+    background-color: #f8f9fa;
+    margin-bottom: 30px;
+}
+
+.ticket:before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    border: 2px dashed #6c757d;
+    border-radius: 50%;
+}
+
+.ticket:after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    border: 2px dashed #6c757d;
+    border-radius: 50%;
+}
+
+/* Category cards */
+.category-card {
+    transition: all 0.3s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Price display */
+.price-display {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #28a745;
+}
+
+/* Profile page */
+.profile-header {
+    padding: 20px;
+    background: linear-gradient(135deg, #007bff, #6610f2);
+    color: white;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.profile-stats {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* QR code */
+.qr-code-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.qr-code {
+    padding: 10px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Stripe payment form */
+.stripe-form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+#card-element {
+    border: 1px solid #ced4da;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: white;
+}
+
+#card-errors {
+    color: #dc3545;
+    margin-top: 10px;
+}
+
+/* Loading spinner */
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+    .card-img-top {
+        height: 150px;
+    }
+    
+    .seat {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+    }
+}

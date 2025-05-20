@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="layout/main :: html(~{::title}, ~{::section})">
+<head>
+    <title th:text="${'SpectaTicket - Réservation - ' + show.title}">SpectaTicket - Réservation</title>
+</head>
+<body>
+    <section>
+        <h2 class="mb-4">
+            <i class="fas fa-ticket-alt me-2"></i>Réservation de place
+            <small class="text-muted" th:text="${show.title}">Titre du spectacle</small>
+        </h2>
+        
+        <div class="row">
+            <!-- Seat selection -->
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Sélectionnez votre place</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning" th:if="${#lists.isEmpty(availableSeats)}">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Toutes les places sont réservées pour ce spectacle.
+                        </div>
+                        
+                        <div th:unless="${#lists.isEmpty(availableSeats)}">
+                            <div class="mb-4 text-center">
+                                <div class="d-inline-flex align-items-center mx-3">
+                                    <div class="seat seat-standard me-2" style="cursor: default;"></div>
+                                    <span>Standard</span>
+                                </div>
+                                <div class="d-inline-flex align-items-center mx-3">
+                                    <div class="seat seat-premium me-2" style="cursor: default;"></div>
+                                    <span>Premium (+50%)</span>
+                                </div>
+                                <div class="d-inline-flex align-items-center mx-3">
+                                    <div class="seat seat-vip me-2" style="cursor: default;"></div>
+                                    <span>VIP (+100%)</span>
+                                </div>
+                                <div class="d-inline-flex align-items-center mx-3">
+                                    <div class="seat reserved me-2" style="cursor: default;"></div>
+                                    <span>Réservé</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Seat chart -->
+                            <div id="seat-chart" class="seat-chart mb-4" th:data-base-price="${show.price}">
+                                <div class="text-center mb-3">
+                                    <div class="stage py-2 px-5 bg-dark text-white d-inline-block">
+                                        SCÈNE
+                                    </div>
+                                </div>
+                                
+                                <!-- Group seats by row -->
+                                <div th:each="row : ${availableSeats.![row].distinct()}" class="seat-row mb-2">
+                                    <div class="row-label me-2" th:text="${row}">A</div>
+                                    
+                                    <div th:each="seat : ${availableSeats.?[row == __${row}__]}" 
+                                         class="seat" 
+                                         th:classappend="${
+                                            seat.category.name() == 'STANDARD' ? 'seat-standard' : 
+                                            seat.category.name() == 'PREMIUM' ? 'seat-premium' : 
+                                            seat.category.name() == 'VIP' ? 'seat-vip' : ''
+                                         }"
+                                         th:data-seat-id="${seat.id}"
+                                         th:text="${seat.number}">1</div>
+                                </div>
+                            </div>
+                            
+                            <form th:action="@{/shows/{id}/reserve(id=${show.id})}" method="post">
+                                <input type="hidden" id="selected-seat" name="seatId" required>
+                                <input type="hidden" id="total-price" name="totalPrice">
+                                
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>Veuillez sélectionner une place dans le plan ci-dessus.
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <strong>Prix:</strong>
+                                        <span id="price-display" class="price-display ms-2" th:text="${show.price + ' €'}">0.00 €</span>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-primary" id="submit-button" disabled>
+                                        <i class="fas fa-shopping-cart me-2"></i>Procéder au paiement
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Show details -->
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <img th:src="${show.image} ?: '/images/default-show.jpg'" class="card-img-top" alt="Image du spectacle">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${show.title}">Titre du Spectacle</h5>
+                        <p class="card-text" th:text="${#strings.abbreviate(show.description, 150)}">Description</p>
+                        
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item">
+                                <i class="fas fa-calendar-alt me-2"></i><strong>Date:</strong> 
+                                <span th:text="${#temporals.format(show.date, 'dd/MM/yyyy HH:mm')}">Date</span>
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-map-marker-alt me-2"></i><strong>Lieu:</strong> 
+                                <span th:text="${show.location}">Lieu</span>
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-tag me-2"></i><strong>Prix de base:</strong> 
+                                <span th:text="${show.price + ' €'}">Prix</span>
+                            </li>
+                        </ul>
+                        
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Les réservations ne sont confirmées qu'après paiement.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <script th:fragment="scripts">
+        document.addEventListener('DOMContentLoaded', function() {
+            let selectedSeat = null;
+            const basePrice = parseFloat(document.getElementById('seat-chart').getAttribute('data-base-price'));
+            
+            // Handle seat selection
+            document.querySelectorAll('.seat:not(.reserved)').forEach(function(seat) {
+                seat.addEventListener('click', function() {
+                    // Remove previous selection
+                    if (selectedSeat) {
+                        selectedSeat.classList.remove('selected');
+                    }
+                    
+                    // Select this seat
+                    this.classList.add('selected');
+                    selectedSeat = this;
+                    
+                    // Update hidden fields
+                    const seatId = this.getAttribute('data-seat-id');
+                    document.getElementById('selected-seat').value = seatId;
+                    
+                    // Calculate price based on seat category
+                    let price = basePrice;
+                    if (this.classList.contains('seat-premium')) {
+                        price = basePrice * 1.5;
+                    } else if (this.classList.contains('seat-vip')) {
+                        price = basePrice * 2;
+                    }
+                    
+                    // Update price display
+                    document.getElementById('price-display').textContent = price.toFixed(2) + ' €';
+                    document.getElementById('total-price').value = price.toFixed(2);
+                    
+                    // Enable the submit button
+                    document.getElementById('submit-button').disabled = false;
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="layout/main :: html(~{::title}, ~{::section})">
+<head>
+    <title th:text="${'Erreur ' + errorCode}">SpectaTicket - Erreur</title>
+</head>
+<body>
+    <section th:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <div class="mt-4 mb-5">
+                    <h1 class="display-1 text-danger" th:text="${errorCode}">Error</h1>
+                    <h2 class="mb-4" th:text="${errorMessage}">Une erreur s'est produite</h2>
+                    
+                    <div class="mb-4">
+                        <p>Nous sommes désolés pour ce désagrément. Vous pouvez essayer de:</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-redo me-2"></i>Rafraîchir la page</li>
+                            <li><i class="fas fa-home me-2"></i>Retourner à <a th:href="@{/}">l'accueil</a></li>
+                            <li><i class="fas fa-search me-2"></i>Parcourir les <a th:href="@{/shows}">spectacles disponibles</a></li>
+                        </ul>
+                    </div>
+                    
+                    <a th:href="@{/}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-home me-2"></i>Retour à l'accueil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

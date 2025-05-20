@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="layout/main :: html(~{::title}, ~{::section})">
+<head>
+    <title>SpectaTicket - Votre Billet</title>
+</head>
+<body>
+    <section th:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h3 class="mb-0">
+                            <i class="fas fa-ticket-alt me-2"></i>Votre billet est confirmé
+                        </h3>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="ticket">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h3 th:text="${reservation.show.title}">Titre du spectacle</h3>
+                                    <p class="lead mb-4">
+                                        <span class="badge bg-primary" th:classappend="${'badge-' + reservation.show.category.name().toLowerCase()}" 
+                                              th:text="${reservation.show.category.name()}">Catégorie</span>
+                                    </p>
+                                    
+                                    <div class="row mb-3">
+                                        <div class="col-6">
+                                            <strong><i class="fas fa-calendar-alt me-2"></i>Date et heure:</strong>
+                                            <p th:text="${#temporals.format(reservation.show.date, 'dd/MM/yyyy HH:mm')}">Date</p>
+                                        </div>
+                                        <div class="col-6">
+                                            <strong><i class="fas fa-map-marker-alt me-2"></i>Lieu:</strong>
+                                            <p th:text="${reservation.show.location}">Lieu</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mb-3">
+                                        <div class="col-6">
+                                            <strong><i class="fas fa-chair me-2"></i>Siège:</strong>
+                                            <p>
+                                                <span th:text="${reservation.seat.seatNumber}">A-12</span>
+                                                (<span th:text="${reservation.seat.category.name()}">Catégorie</span>)
+                                            </p>
+                                        </div>
+                                        <div class="col-6">
+                                            <strong><i class="fas fa-user me-2"></i>Réservé pour:</strong>
+                                            <p th:text="${reservation.user.firstName + ' ' + reservation.user.lastName}">Nom</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <strong><i class="fas fa-key me-2"></i>Code de confirmation:</strong>
+                                        <p class="text-monospace" th:text="${reservation.confirmationCode}">CODE123</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="qr-code-container">
+                                        <div class="qr-code">
+                                            <img th:src="${qrCode}" alt="QR Code" class="img-fluid">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-info-circle me-2"></i>Présentez ce ticket à l'entrée (version imprimée ou sur mobile).
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a th:href="@{/my-bookings}" class="btn btn-outline-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Retour à mes réservations
+                            </a>
+                            
+                            <a th:href="@{/tickets/{id}/download(id=${reservation.id})}" class="btn btn-primary">
+                                <i class="fas fa-download me-2"></i>Télécharger le PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

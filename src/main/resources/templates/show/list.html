@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="layout/main :: html(~{::title}, ~{::section})">
+<head>
+    <title>SpectaTicket - Spectacles</title>
+</head>
+<body>
+    <section th:fragment="content">
+        <!-- Page header with filter options -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <span th:if="${keyword}" th:text="'Recherche: ' + ${keyword}">Recherche</span>
+                <span th:unless="${keyword}" th:text="${currentCategory != null ? 'Catégorie: ' + currentCategory : 'Tous les spectacles'}">Spectacles</span>
+            </h1>
+            
+            <div class="dropdown">
+                <button class="btn btn-outline-primary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-filter me-2"></i>Filtrer par catégorie
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                    <li><a class="dropdown-item" th:href="@{/shows}">Tous les spectacles</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li th:each="category : ${allCategories}">
+                        <a class="dropdown-item" th:href="@{/shows/category/{cat}(cat=${category.name().toLowerCase()})}" 
+                           th:text="${category.name()}">Catégorie</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- No shows message -->
+        <div th:if="${#lists.isEmpty(shows)}" class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>Aucun spectacle trouvé.
+        </div>
+        
+        <!-- Show list -->
+        <div class="row" th:unless="${#lists.isEmpty(shows)}">
+            <div class="col-md-4 mb-4" th:each="show : ${shows}">
+                <div class="card h-100">
+                    <img class="card-img-top" th:src="${show.image} ?: '/images/default-show.jpg'" alt="Image du spectacle">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${show.title}">Titre du Spectacle</h5>
+                        <p class="card-text" th:text="${#strings.abbreviate(show.description, 150)}">Description</p>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="badge bg-primary" th:classappend="${'badge-' + show.category.name().toLowerCase()}" th:text="${show.category.name()}">Catégorie</span>
+                            <span class="text-muted" th:text="${#temporals.format(show.date, 'dd/MM/yyyy HH:mm')}">Date</span>
+                        </div>
+                        
+                        <p><i class="fas fa-map-marker-alt me-2"></i><span th:text="${show.location}">Lieu</span></p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <strong class="text-primary" th:text="${show.price + ' €'}">Prix</strong>
+                            <a th:href="@{/shows/{id}(id=${show.id})}" class="btn btn-outline-primary">
+                                <i class="fas fa-ticket-alt me-1"></i>Réserver
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="layout/main :: html(~{::title}, ~{::section})">
+<head>
+    <title th:text="${'SpectaTicket - ' + show.title}">SpectaTicket - Détails du Spectacle</title>
+</head>
+<body>
+    <section th:fragment="content">
+        <div class="card mb-4">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img th:src="${show.image} ?: '/images/default-show.jpg'" class="img-fluid rounded-start h-100" alt="Image du spectacle" style="object-fit: cover;">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title" th:text="${show.title}">Titre du Spectacle</h2>
+                        <span class="badge bg-primary mb-3" th:classappend="${'badge-' + show.category.name().toLowerCase()}" th:text="${show.category.name()}">Catégorie</span>
+                        
+                        <p class="card-text" th:text="${show.description}">Description détaillée du spectacle.</p>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p><i class="fas fa-calendar-alt me-2"></i><strong>Date:</strong> <span th:text="${#temporals.format(show.date, 'dd/MM/yyyy HH:mm')}">Date</span></p>
+                                <p><i class="fas fa-map-marker-alt me-2"></i><strong>Lieu:</strong> <span th:text="${show.location}">Lieu</span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><i class="fas fa-tag me-2"></i><strong>Prix:</strong> <span class="text-primary fw-bold" th:text="${show.price + ' €'}">Prix</span></p>
+                                <p><i class="fas fa-clock me-2"></i><strong>Durée:</strong> <span>Environ 2 heures</span></p>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info" sec:authorize="!isAuthenticated()">
+                            <i class="fas fa-info-circle me-2"></i>Vous devez être connecté pour réserver des places.
+                            <a th:href="@{/login}" class="alert-link">Connectez-vous</a> ou 
+                            <a th:href="@{/register}" class="alert-link">inscrivez-vous</a> pour continuer.
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end" sec:authorize="isAuthenticated()">
+                            <a th:href="@{/shows/{id}/reserve(id=${show.id})}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-ticket-alt me-2"></i>Réserver des places
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Seat availability -->
+        <div class="card" sec:authorize="isAuthenticated()">
+            <div class="card-header bg-light">
+                <h3 class="mb-0"><i class="fas fa-chair me-2"></i>Disponibilité des places</h3>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex align-items-center mx-3">
+                        <div class="seat seat-standard me-2" style="cursor: default;"></div>
+                        <span>Standard</span>
+                    </div>
+                    <div class="d-inline-flex align-items-center mx-3">
+                        <div class="seat seat-premium me-2" style="cursor: default;"></div>
+                        <span>Premium</span>
+                    </div>
+                    <div class="d-inline-flex align-items-center mx-3">
+                        <div class="seat seat-vip me-2" style="cursor: default;"></div>
+                        <span>VIP</span>
+                    </div>
+                    <div class="d-inline-flex align-items-center mx-3">
+                        <div class="seat reserved me-2" style="cursor: default;"></div>
+                        <span>Réservé</span>
+                    </div>
+                </div>
+                
+                <div class="alert alert-warning" th:if="${#lists.isEmpty(availableSeats)}">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Toutes les places sont réservées pour ce spectacle.
+                </div>
+                
+                <div th:unless="${#lists.isEmpty(availableSeats)}" class="text-center">
+                    <p class="mb-4">Il reste <span th:text="${availableSeats.size()}">X</span> places disponibles. Cliquez sur "Réserver des places" pour procéder à la sélection de siège.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

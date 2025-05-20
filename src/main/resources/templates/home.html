@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="layout/main :: html(~{::title}, ~{::section})">
+<head>
+    <title>SpectaTicket - Accueil</title>
+</head>
+<body>
+    <section th:fragment="content">
+        <!-- Hero Section -->
+        <div class="jumbotron bg-light p-5 rounded mb-4">
+            <div class="container">
+                <h1 class="display-4">Bienvenue sur SpectaTicket</h1>
+                <p class="lead">Découvrez et réservez des billets pour les meilleurs spectacles.</p>
+                <hr class="my-4">
+                <p>Parcourez notre catalogue de spectacles par catégorie ou utilisez la recherche pour trouver votre événement idéal.</p>
+                <a class="btn btn-primary btn-lg" th:href="@{/shows}" role="button">
+                    <i class="fas fa-ticket-alt me-2"></i>Explorer les spectacles
+                </a>
+            </div>
+        </div>
+        
+        <!-- Featured Shows -->
+        <div class="container">
+            <h2 class="mb-4">Spectacles à venir</h2>
+            
+            <div th:if="${#lists.isEmpty(upcomingShows)}">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>Aucun spectacle à venir pour le moment.
+                </div>
+            </div>
+            
+            <div class="row" th:unless="${#lists.isEmpty(upcomingShows)}">
+                <div class="col-md-4 mb-4" th:each="show : ${upcomingShows}">
+                    <div class="card h-100">
+                        <img class="card-img-top" th:src="${show.image} ?: '/images/default-show.jpg'" alt="Image du spectacle">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${show.title}">Titre du Spectacle</h5>
+                            <p class="card-text" th:text="${#strings.abbreviate(show.description, 100)}">Description</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary" th:classappend="${'badge-' + show.category.name().toLowerCase()}" th:text="${show.category.name()}">Catégorie</span>
+                                <span class="text-muted" th:text="${#temporals.format(show.date, 'dd/MM/yyyy HH:mm')}">Date</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <strong class="text-primary" th:text="${show.price + ' €'}">Prix</strong>
+                                <a th:href="@{/shows/{id}(id=${show.id})}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-info-circle me-1"></i>Détails
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Categories Section -->
+        <div class="container mt-5">
+            <h2 class="mb-4">Parcourir par catégorie</h2>
+            <div class="row text-center">
+                <div class="col-md-2 mb-4" th:each="category : ${allCategories}">
+                    <a th:href="@{/shows/category/{cat}(cat=${category.name().toLowerCase()})}" class="text-decoration-none">
+                        <div class="p-3 rounded shadow-sm category-card" th:classappend="${'bg-category-' + category.name().toLowerCase()}">
+                            <i class="fas fa-3x mb-2" th:classappend="${category.name() == 'CONCERT' ? 'fa-music' : 
+                                                                       category.name() == 'THEATRE' ? 'fa-masks-theater' : 
+                                                                       category.name() == 'CINEMA' ? 'fa-film' : 
+                                                                       category.name() == 'COMEDY' ? 'fa-laugh' : 
+                                                                       category.name() == 'DANCE' ? 'fa-person-dancing' : 'fa-star'}"></i>
+                            <h5 th:text="${category.name()}">Catégorie</h5>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
