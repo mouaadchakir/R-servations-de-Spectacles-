@@ -16,4 +16,5 @@ public interface SeatService {
     boolean reserveSeat(Long seatId);
     boolean releaseSeat(Long seatId);
     void createInitialSeatsForShow(Show show, int numberOfRows, int seatsPerRow);
+    void deleteAllSeatsByShowId(Long showId);
 }

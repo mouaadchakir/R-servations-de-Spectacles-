@@ -65,11 +65,18 @@
                                            title="Modifier" data-bs-toggle="tooltip">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <button type="button" class="btn btn-outline-danger confirm-delete" 
+
+
+
+                                        <a th:href="@{/admin/shows/{id}/delete(id=${show.id})}" class="btn btn-outline-danger confirm-delete"
+                                           title="Supprimer" data-bs-toggle="tooltip">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                        <!--<button type="button"  class="btn btn-outline-danger confirm-delete" 
                                                 title="Supprimer" data-bs-toggle="tooltip"
                                                 th:data-show-id="${show.id}">
                                             <i class="fas fa-trash"></i>
-                                        </button>
+                                        </button>-->
                                     </div>
                                     
                                     <form th:id="'delete-form-' + ${show.id}" 

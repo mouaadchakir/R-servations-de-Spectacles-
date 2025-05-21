@@ -12,4 +12,7 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
     List<Seat> findByShow(Show show);
     List<Seat> findByShowAndIsReserved(Show show, boolean isReserved);
     List<Seat> findByShowIdAndIsReserved(Long showId, boolean isReserved);
+    
+    void deleteByShowId(Long showId);
+    List<Seat> findByShowId(Long showId);
 }

@@ -159,4 +159,15 @@ public class AdminController {
         }
         return "redirect:/admin/shows";
     }
+    
+    @GetMapping("/shows/{id}/delete")
+    public String deleteShowGet(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            showService.deleteShow(id);
+            redirectAttributes.addFlashAttribute("success", "Spectacle supprimé avec succès");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Échec de la suppression: " + e.getMessage());
+        }
+        return "redirect:/admin/shows";
+    }
 }

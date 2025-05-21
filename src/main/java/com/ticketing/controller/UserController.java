@@ -175,18 +175,18 @@ public class UserController {
         
         // Validate password match
         if (!newPassword.equals(confirmPassword)) {
-            redirectAttributes.addFlashAttribute("error", "New passwords do not match");
+            redirectAttributes.addFlashAttribute("error", "Les nouveaux mots de passe ne correspondent pas");
             return "redirect:/change-password";
         }
         
         // Attempt to change password
         boolean changed = userService.changePassword(user.getId(), currentPassword, newPassword);
         if (!changed) {
-            redirectAttributes.addFlashAttribute("error", "Current password is incorrect");
+            redirectAttributes.addFlashAttribute("error", "Le mot de passe actuel est incorrect");
             return "redirect:/change-password";
         }
         
-        redirectAttributes.addFlashAttribute("success", "Password changed successfully");
+        redirectAttributes.addFlashAttribute("success", "Mot de passe modifié avec succès");
         return "redirect:/profile";
     }
 }

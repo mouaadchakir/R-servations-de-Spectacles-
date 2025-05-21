@@ -3,6 +3,7 @@ package com.ticketing.service.impl;
 import com.ticketing.model.Show;
 import com.ticketing.model.ShowCategory;
 import com.ticketing.repository.ShowRepository;
+import com.ticketing.service.SeatService;
 import com.ticketing.service.ShowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.List;
 public class ShowServiceImpl implements ShowService {
 
     private final ShowRepository showRepository;
+    private final SeatService seatService;
 
     @Override
     @Transactional
@@ -57,6 +59,10 @@ public class ShowServiceImpl implements ShowService {
     @Override
     @Transactional
     public void deleteShow(Long id) {
+        // D'abord supprimer tous les sièges associés au spectacle
+        seatService.deleteAllSeatsByShowId(id);
+        
+        // Ensuite supprimer le spectacle
         showRepository.deleteById(id);
     }
 

@@ -6,64 +6,152 @@
 </head>
 <body>
     <section th:fragment="content">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0"><i class="fas fa-user-plus me-2"></i>Inscription</h4>
-                    </div>
-                    <div class="card-body">
-                        <form th:action="@{/register}" method="post" th:object="${user}">
-                            <div class="mb-3">
-                                <label for="username" class="form-label">Nom d'utilisateur</label>
-                                <input type="text" class="form-control" id="username" th:field="*{username}" required>
-                                <div class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-8 col-lg-7">
+                    <div class="card shadow-lg" style="border-radius: 1rem; border: none; overflow: hidden;">
+                        <div class="card-body p-5">
+                            <!-- Logo et titre -->
+                            <div class="text-center mb-4">
+                                <i class="fas fa-user-plus fa-3x text-primary mb-3 animate__animated animate__bounceIn"></i>
+                                <h2 class="fw-bold mb-2">Créer un compte</h2>
+                                <p class="text-muted mb-4">Rejoignez SpectaTicket en quelques étapes</p>
                             </div>
-                            
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" th:field="*{email}" required>
-                                <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="firstName" class="form-label">Prénom</label>
-                                    <input type="text" class="form-control" id="firstName" th:field="*{firstName}" required>
-                                    <div class="text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+
+                            <!-- Formulaire d'inscription -->
+                            <form th:action="@{/register}" method="post" th:object="${user}" class="needs-validation" novalidate>
+                                <!-- Nom d'utilisateur -->
+                                <div class="mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fas fa-user text-primary"></i></span>
+                                        <input type="text" class="form-control" id="username" th:field="*{username}" placeholder="Nom d'utilisateur" required>
+                                    </div>
+                                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
                                 </div>
                                 
-                                <div class="col-md-6 mb-3">
-                                    <label for="lastName" class="form-label">Nom</label>
-                                    <input type="text" class="form-control" id="lastName" th:field="*{lastName}" required>
-                                    <div class="text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+                                <!-- Email -->
+                                <div class="mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fas fa-envelope text-primary"></i></span>
+                                        <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="Adresse email" required>
+                                    </div>
+                                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                                </div>
+                                
+                                <!-- Prénom et Nom -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light"><i class="fas fa-id-card text-primary"></i></span>
+                                            <input type="text" class="form-control" id="firstName" th:field="*{firstName}" placeholder="Prénom" required>
+                                        </div>
+                                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light"><i class="fas fa-id-card text-primary"></i></span>
+                                            <input type="text" class="form-control" id="lastName" th:field="*{lastName}" placeholder="Nom" required>
+                                        </div>
+                                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Mot de passe -->
+                                <div class="mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fas fa-lock text-primary"></i></span>
+                                        <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="Mot de passe" required>
+                                        <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('password', 'toggleIcon1')">
+                                            <i class="fas fa-eye" id="toggleIcon1"></i>
+                                        </button>
+                                    </div>
+                                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                                </div>
+                                
+                                <!-- Confirmation du mot de passe -->
+                                <div class="mb-4">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fas fa-key text-primary"></i></span>
+                                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirmer le mot de passe" required>
+                                        <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('confirmPassword', 'toggleIcon2')">
+                                            <i class="fas fa-eye" id="toggleIcon2"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Conditions générales -->
+                                <div class="mb-4 form-check">
+                                    <input type="checkbox" class="form-check-input" id="terms" required>
+                                    <label class="form-check-label" for="terms">J'accepte les <a href="#" class="text-primary">conditions d'utilisation</a> et la <a href="#" class="text-primary">politique de confidentialité</a></label>
+                                </div>
+                                
+                                <!-- Bouton d'inscription -->
+                                <div class="d-grid gap-2 mb-4">
+                                    <button type="submit" class="btn btn-primary py-3 fw-bold">
+                                        <i class="fas fa-user-plus me-2"></i>Créer mon compte
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <!-- Lien de connexion -->
+                            <div class="text-center">
+                                <p>Vous avez déjà un compte? <a th:href="@{/login}" class="fw-bold text-primary">Connectez-vous</a></p>
+                                <div class="mt-3">
+                                    <a th:href="@{/}" class="btn btn-outline-secondary btn-sm">
+                                        <i class="fas fa-home me-2"></i>Retour à l'accueil
+                                    </a>
                                 </div>
                             </div>
-                            
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Mot de passe</label>
-                                <input type="password" class="form-control" id="password" th:field="*{password}" required>
-                                <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
-                                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
-                            </div>
-                            
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-user-plus me-2"></i>S'inscrire
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-footer text-center">
-                        <p class="mb-0">Vous avez déjà un compte ? <a th:href="@{/login}">Connectez-vous</a></p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        
+        <!-- Script pour basculer l'affichage des mots de passe -->
+        <script>
+            function togglePassword(fieldId, iconId) {
+                const passwordField = document.getElementById(fieldId);
+                const toggleIcon = document.getElementById(iconId);
+                
+                if (passwordField.type === 'password') {
+                    passwordField.type = 'text';
+                    toggleIcon.classList.remove('fa-eye');
+                    toggleIcon.classList.add('fa-eye-slash');
+                } else {
+                    passwordField.type = 'password';
+                    toggleIcon.classList.remove('fa-eye-slash');
+                    toggleIcon.classList.add('fa-eye');
+                }
+            }
+            
+            // Validation des formulaires Bootstrap
+            (() => {
+                'use strict';
+                const forms = document.querySelectorAll('.needs-validation');
+                Array.from(forms).forEach(form => {
+                    form.addEventListener('submit', event => {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                        
+                        // Vérifier si les mots de passe correspondent
+                        const password = document.getElementById('password');
+                        const confirmPassword = document.getElementById('confirmPassword');
+                        if (password.value !== confirmPassword.value) {
+                            confirmPassword.setCustomValidity('Les mots de passe ne correspondent pas');
+                            event.preventDefault();
+                            event.stopPropagation();
+                        } else {
+                            confirmPassword.setCustomValidity('');
+                        }
+                    }, false);
+                });
+            })();
+        </script>
     </section>
 </body>
 </html>

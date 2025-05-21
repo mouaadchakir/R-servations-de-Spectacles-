@@ -16,5 +16,6 @@ public class GlobalModelAttributesAdvice {
     @ModelAttribute("allCategories")
     public ShowCategory[] getAllCategories() {
         return ShowCategory.values();
+        
     }
 }

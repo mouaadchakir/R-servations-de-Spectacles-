@@ -129,4 +129,10 @@ public class SeatServiceImpl implements SeatService {
         // Save all seats
         seatRepository.saveAll(seats);
     }
+    
+    @Override
+    @Transactional
+    public void deleteAllSeatsByShowId(Long showId) {
+        seatRepository.deleteByShowId(showId);
+    }
 }
