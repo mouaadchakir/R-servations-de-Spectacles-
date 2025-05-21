@@ -100,7 +100,7 @@ function initializeSeatSelection() {
             
             // Update price display
             const totalPrice = (basePrice * priceMultiplier).toFixed(2);
-            priceDisplay.textContent = totalPrice + ' €';
+            priceDisplay.textContent = totalPrice + ' DH';
             totalPriceInput.value = totalPrice;
         });
     });

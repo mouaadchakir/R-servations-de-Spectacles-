@@ -14,82 +14,144 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%); box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
         <div class="container">
-            <a class="navbar-brand" th:href="@{/}">
-                <i class="fas fa-ticket-alt me-2"></i>SpectaTicket
+            <a class="navbar-brand fw-bold d-flex align-items-center" th:href="@{/}">
+                <div class="bg-white text-primary p-1 rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+                <span style="letter-spacing: 0.5px;">SpectaTicket</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/}">Accueil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/shows}">Spectacles</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown">
-                            Catégories
+                    <li class="nav-item mx-1">
+                        <a class="nav-link px-3 py-2 d-flex align-items-center" th:href="@{/}">
+                            <i class="fas fa-home me-2"></i>
+                            <span>Accueil</span>
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
+                    </li>
+                    <li class="nav-item mx-1">
+                        <a class="nav-link px-3 py-2 d-flex align-items-center" th:href="@{/shows}">
+                            <i class="fas fa-theater-masks me-2"></i>
+                            <span>Spectacles</span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown mx-1">
+                        <a class="nav-link dropdown-toggle px-3 py-2 d-flex align-items-center" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-list-alt me-2"></i>
+                            <span>Catégories</span>
+                        </a>
+                        <ul class="dropdown-menu border-0 shadow-lg animate__animated animate__fadeIn" style="margin-top: 10px; border-radius: 10px;" aria-labelledby="categoriesDropdown">
                             <li th:each="category : ${allCategories}">
-                                <a class="dropdown-item" th:href="@{/shows/category/{cat}(cat=${category.name().toLowerCase()})}" 
+                                <a class="dropdown-item py-2" th:href="@{/shows/category/{cat}(cat=${category.name().toLowerCase()})}" 
                                    th:text="${category.name()}">Category</a>
                             </li>
                         </ul>
                     </li>
                 </ul>
                 
-                <form class="d-flex me-2" th:action="@{/shows/search}" method="get">
-                    <input class="form-control me-2" type="search" name="keyword" placeholder="Rechercher un spectacle...">
-                    <button class="btn btn-outline-light" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
+                <form class="d-flex me-3 position-relative" th:action="@{/shows/search}" method="get">
+                    <div class="input-group">
+                        <input class="form-control border-0 bg-light" type="search" name="keyword" placeholder="Rechercher un spectacle..." 
+                               style="border-radius: 20px 0 0 20px; padding-left: 15px;">
+                        <button class="btn text-white" type="submit" style="border-radius: 0 20px 20px 0; background: rgba(255,255,255,0.2);">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
                 </form>
                 
                 <ul class="navbar-nav">
                     <!-- For non-authenticated users -->
                     <li class="nav-item" sec:authorize="!isAuthenticated()">
-                        <a class="nav-link" th:href="@{/login}">
-                            <i class="fas fa-sign-in-alt me-1"></i>Connexion
+                        <a class="nav-link btn btn-outline-light mx-1 px-3 d-flex align-items-center" style="border-radius: 20px;" th:href="@{/login}">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            <span>Connexion</span>
                         </a>
                     </li>
                     <li class="nav-item" sec:authorize="!isAuthenticated()">
-                        <a class="nav-link" th:href="@{/register}">
-                            <i class="fas fa-user-plus me-1"></i>Inscription
+                        <a class="nav-link btn btn-light text-primary mx-1 px-3 d-flex align-items-center" style="border-radius: 20px;" th:href="@{/register}">
+                            <i class="fas fa-user-plus me-2"></i>
+                            <span>Inscription</span>
                         </a>
                     </li>
                     
                     <!-- For authenticated users -->
                     <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user me-1"></i><span sec:authentication="name">User</span>
+                        <a class="nav-link dropdown-toggle d-flex align-items-center bg-white bg-opacity-10 px-3 py-2 rounded-pill" 
+                           href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" 
+                           style="transition: all 0.3s ease;">
+                            <!-- Affichage de la photo de profil si disponible, sinon icône par défaut -->
+                            <span class="me-2 d-flex align-items-center justify-content-center">
+                                <img th:if="${profileImage != null}" th:src="${profileImage}" 
+                                     class="rounded-circle border border-2 border-light shadow-sm" 
+                                     width="36" height="36" alt="Photo de profil" 
+                                     style="object-fit: cover;">
+                                <div th:unless="${profileImage != null}" 
+                                     class="rounded-circle bg-light d-flex align-items-center justify-content-center" 
+                                     style="width: 36px; height: 36px;">
+                                    <i class="fas fa-user text-primary" style="font-size: 1.1rem;"></i>
+                                </div>
+                            </span>
+                            <!-- Affichage du nom complet s'il est disponible, sinon le nom d'utilisateur -->
+                            <span class="fw-medium" style="max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                <span th:if="${userFullName != null}" th:text="${userFullName}">Nom Complet</span>
+                                <span th:unless="${userFullName != null}" sec:authentication="name">User</span>
+                            </span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg animate__animated animate__fadeIn" 
+                            aria-labelledby="userDropdown" 
+                            style="margin-top: 12px; border-radius: 15px; min-width: 240px;">
+                            <li class="px-2 py-2">
+                                <div class="d-flex align-items-center px-2 py-2">
+                                    <span class="me-2">
+                                        <img th:if="${profileImage != null}" th:src="${profileImage}" 
+                                             class="rounded-circle border border-light shadow-sm" 
+                                             width="40" height="40" alt="Photo de profil" 
+                                             style="object-fit: cover;">
+                                        <div th:unless="${profileImage != null}" 
+                                             class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" 
+                                             style="width: 40px; height: 40px;">
+                                            <i class="fas fa-user text-primary"></i>
+                                        </div>
+                                    </span>
+                                    <div class="d-flex flex-column">
+                                        <strong class="text-truncate" style="max-width: 160px;">
+                                            <span th:if="${userFullName != null}" th:text="${userFullName}">Nom Complet</span>
+                                            <span th:unless="${userFullName != null}" sec:authentication="name">User</span>
+                                        </strong>
+                                        <small class="text-muted">Membre</small>
+                                    </div>
+                                </div>
+                                <hr class="my-2">
+                            </li>
                             <li>
-                                <a class="dropdown-item" th:href="@{/profile}">
-                                    <i class="fas fa-id-card me-1"></i>Mon Profil
+                                <a class="dropdown-item rounded-3 py-2 px-3 mb-1" th:href="@{/profile}">
+                                    <i class="fas fa-user-circle me-2 text-primary"></i>
+                                    <span>Mon Profil</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" th:href="@{/my-bookings}">
-                                    <i class="fas fa-ticket-alt me-1"></i>Mes Réservations
+                                <a class="dropdown-item rounded-3 py-2 px-3 mb-1" th:href="@{/my-reservations}">
+                                    <i class="fas fa-ticket-alt me-2 text-primary"></i>
+                                    <span>Mes Réservations</span>
                                 </a>
                             </li>
                             <li sec:authorize="hasRole('ROLE_ADMIN')">
-                                <a class="dropdown-item" th:href="@{/admin/shows}">
-                                    <i class="fas fa-cog me-1"></i>Administration
+                                <a class="dropdown-item rounded-3 py-2 px-3 mb-1" th:href="@{/admin/shows}">
+                                    <i class="fas fa-cog me-2 text-primary"></i>
+                                    <span>Administration</span>
                                 </a>
                             </li>
-                            <li>
+                            <li class="px-2">
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
-                                <a class="dropdown-item" th:href="@{/logout}">
-                                    <i class="fas fa-sign-out-alt me-1"></i>Déconnexion
+                                <a class="dropdown-item rounded-3 py-2 px-3 text-danger" th:href="@{/logout}">
+                                    <i class="fas fa-sign-out-alt me-2"></i>
+                                    <span>Déconnexion</span>
                                 </a>
                             </li>
                         </ul>

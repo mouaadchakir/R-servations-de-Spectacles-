@@ -32,7 +32,7 @@
                                 <div class="d-grid gap-2">
                                     <button id="submit-button" class="btn btn-primary">
                                         <i class="fas fa-lock me-2"></i>Payer maintenant
-                                        <span th:text="${reservation.totalPrice + ' €'}">0.00 €</span>
+                                        <span th:text="${reservation.totalPrice + ' DH'}">0.00 DH</span>
                                     </button>
                                     <div id="loading-indicator" class="text-center mt-3 d-none">
                                         <div class="spinner-border text-primary" role="status">
@@ -83,7 +83,7 @@
                         
                         <div class="d-flex justify-content-between align-items-center fw-bold">
                             <span>Total:</span>
-                            <span class="text-primary fs-4" th:text="${reservation.totalPrice + ' €'}">0.00 €</span>
+                            <span class="text-primary fs-4" th:text="${reservation.totalPrice + ' DH'}">0.00 DH</span>
                         </div>
                     </div>
                 </div>

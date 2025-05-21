@@ -79,6 +79,8 @@ public class UserController {
                 // Add individual attributes to the model instead of the whole user object
                 model.addAttribute("email", user.getEmail());
                 model.addAttribute("bio", user.getBio());
+                model.addAttribute("firstName", user.getFirstName());
+                model.addAttribute("lastName", user.getLastName());
                 
                 // Add profile image path if it exists
                 if (user.getProfileImagePath() != null && !user.getProfileImagePath().isEmpty()) {
@@ -113,6 +115,8 @@ public class UserController {
 
     @PostMapping("/profile/update")
     public String updateProfile(@RequestParam("email") String email,
+                               @RequestParam(value = "firstName", required = false) String firstName,
+                               @RequestParam(value = "lastName", required = false) String lastName,
                                @RequestParam(value = "bio", required = false) String bio,
                                @RequestParam(value = "profileImage", required = false) MultipartFile profileImage,
                                RedirectAttributes redirectAttributes) {
@@ -127,9 +131,18 @@ public class UserController {
                 return "redirect:/profile";
             }
             
-            // Update the user's email and bio
+            // Update the user's information
             currentUser.setEmail(email);
             currentUser.setBio(bio);
+            
+            // Update firstName and lastName if provided
+            if (firstName != null && !firstName.trim().isEmpty()) {
+                currentUser.setFirstName(firstName);
+            }
+            
+            if (lastName != null && !lastName.trim().isEmpty()) {
+                currentUser.setLastName(lastName);
+            }
             
             // Process the profile image if provided
             if (profileImage != null && !profileImage.isEmpty()) {

@@ -58,7 +58,7 @@
                                 <td th:text="${reservation.show.title}">Titre du spectacle</td>
                                 <td th:text="${reservation.seat.number}">A1</td>
                                 <td th:text="${#temporals.format(reservation.reservationDate, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
-                                <td th:text="${reservation.totalPrice} + ' €'">50.00 €</td>
+                                <td th:text="${reservation.totalPrice} + ' DH'">50.00 DH</td>
                                 <td>
                                     <span th:if="${reservation.paymentConfirmed}" class="badge bg-success">Confirmé</span>
                                     <span th:unless="${reservation.paymentConfirmed}" class="badge bg-warning text-dark">En attente</span>

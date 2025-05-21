@@ -54,7 +54,7 @@
                                     <span class="badge bg-primary" th:classappend="${'badge-' + show.category.name().toLowerCase()}" 
                                           th:text="${show.category.name()}">Catégorie</span>
                                 </td>
-                                <td th:text="${show.price + ' €'}">Prix</td>
+                                <td th:text="${show.price + ' DH'}">Prix</td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
                                         <a th:href="@{/shows/{id}(id=${show.id})}" class="btn btn-outline-primary" 
@@ -68,7 +68,7 @@
 
 
 
-                                        <a th:href="@{/admin/shows/{id}/delete(id=${show.id})}" class="btn btn-outline-danger confirm-delete"
+                                        <a th:href="@{/admin/shows/{id}/delete(id=${show.id})}" class="btn btn-outline-secondary" 
                                            title="Supprimer" data-bs-toggle="tooltip">
                                             <i class="fas fa-trash"></i>
                                         </a>

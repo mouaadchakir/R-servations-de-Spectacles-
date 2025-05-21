@@ -71,7 +71,7 @@
                         </div>
                         
                         <div class="col-md-4 mb-3">
-                            <label for="price" class="form-label">Prix (€)</label>
+                            <label for="price" class="form-label">Prix (DH)</label>
                             <input type="number" class="form-control" id="price" th:field="*{price}" step="0.01" min="0" required>
                             <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
                         </div>
