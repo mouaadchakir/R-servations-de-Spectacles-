@@ -45,6 +45,7 @@ C:\Users\hp\Desktop\prj-spring1\src\main\java\com\ticketing\model\UserRole.java
 C:\Users\hp\Desktop\prj-spring1\src\main\java\com\ticketing\service\FileStorageService.java
 C:\Users\hp\Desktop\prj-spring1\src\main\java\com\ticketing\util\QRCodeGenerator.java
 C:\Users\hp\Desktop\prj-spring1\src\main\java\com\ticketing\repository\UserRepository.java
+C:\Users\hp\Desktop\prj-spring1\src\main\java\com\ticketing\config\GlobalModelAttributesConfig.java
 C:\Users\hp\Desktop\prj-spring1\src\main\java\com\ticketing\exception\PaymentException.java
 C:\Users\hp\Desktop\prj-spring1\src\main\java\com\ticketing\controller\ShowController.java
 C:\Users\hp\Desktop\prj-spring1\src\main\java\com\ticketing\model\Reservation.java
