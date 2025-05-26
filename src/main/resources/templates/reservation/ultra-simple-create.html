@@ -90,7 +90,8 @@
                         </p>
                         <p th:if="${show}" class="mb-0">
                             <i class="fas fa-tag me-2"></i> Prix: 
-                            <span class="fw-bold text-primary" th:text="${show.price} + ' DH'">50.00 DH</span>
+                            
+                            <span class="text-primary fw-bold" th:text="${show.price + ' DH'}">Prix</span>
                         </p>
                         <p th:unless="${show}" class="text-muted fst-italic mb-0">
                             Information limitée disponible. Vous pouvez quand même continuer votre réservation.
@@ -99,7 +100,7 @@
                     <div class="col-md-4">
                         <div class="bg-light p-3 rounded text-center">
                             <i class="fas fa-ticket-alt fa-3x text-primary mb-3"></i>
-                            <p class="mb-1">Billets disponibles</p>
+                            <p class="mb-1">Billets disponibless</p>
                             <h4 class="text-success mb-0">Disponible</h4>
                         </div>
                     </div>

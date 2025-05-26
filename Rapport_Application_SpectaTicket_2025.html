@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport d'Analyse et de Développement : Application SpectaTicket</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+            margin-top: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .date {
+            text-align: center;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+        .toc {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .toc h2 {
+            margin-top: 0;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .image-placeholder {
+            background-color: #eef2f7;
+            border: 2px dashed #3498db;
+            border-radius: 5px;
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+            color: #7f8c8d;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .highlight {
+            background-color: #ffffcc;
+            padding: 2px;
+        }
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+            margin-left: 0;
+            color: #555;
+        }
+        @media print {
+            body {
+                max-width: 100%;
+                padding: 0;
+                font-size: 12pt;
+            }
+            pre, code {
+                font-size: 10pt;
+            }
+            .no-print {
+                display: none;
+            }
+            a {
+                text-decoration: none;
+                color: #000;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>RAPPORT D'ANALYSE ET DE DÉVELOPPEMENT : APPLICATION SPECTATICKET</h1>
+    <p class="date">Document préparé le 26 mai 2025</p>
+
+    <div class="toc">
+        <h2>Table des matières</h2>
+        <ol>
+            <li>
+                <a href="#architecture">Description détaillée de l'architecture</a>
+                <ul>
+                    <li><a href="#architecture-globale">Architecture globale</a></li>
+                    <li><a href="#structure-projet">Structure du projet</a></li>
+                    <li><a href="#couche-presentation">Couche de présentation</a></li>
+                    <li><a href="#couche-metier">Couche métier</a></li>
+                    <li><a href="#couche-donnees">Couche d'accès aux données</a></li>
+                    <li><a href="#securite">Sécurité</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#fonctionnalites">Présentation des fonctionnalités implémentées</a>
+                <ul>
+                    <li><a href="#version-1">Version 1 : Fonctionnalités de base</a></li>
+                    <li><a href="#version-2">Version 2 : Fonctionnalités avancées</a></li>
+                    <li><a href="#evolution-interfaces">Évolution des interfaces utilisateur</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#analyse-comparative">Analyse comparative des frameworks</a>
+                <ul>
+                    <li><a href="#spring-boot">Spring Boot</a></li>
+                    <li><a href="#frameworks-frontend">Frameworks front-end (Thymeleaf vs alternatives)</a></li>
+                    <li><a href="#avantages-inconvenients">Avantages et inconvénients</a></li>
+                    <li><a href="#difficultes">Difficultés rencontrées</a></li>
+                    <li><a href="#performance">Performance perçue</a></li>
+                    <li><a href="#facilite">Facilité de développement</a></li>
+                </ul>
+            </li>
+            <li><a href="#conclusion">Conclusion et recommandations</a></li>
+        </ol>
+    </div>
+
+    <h2 id="architecture">1. Description détaillée de l'architecture</h2>
+
+    <h3 id="architecture-globale">Architecture globale</h3>
+    <p>L'application SpectaTicket est construite sur une architecture <strong>MVC (Modèle-Vue-Contrôleur)</strong> en utilisant le framework Spring Boot. Cette architecture en couches permet une séparation claire des responsabilités :</p>
+    <ul>
+        <li><strong>Modèle</strong> : Représente les données et la logique métier</li>
+        <li><strong>Vue</strong> : Gère l'interface utilisateur et la présentation des données</li>
+        <li><strong>Contrôleur</strong> : Coordonne les interactions entre le modèle et la vue</li>
+    </ul>
+    <p>L'application suit également les principes d'une <strong>architecture orientée services</strong>, avec une séparation nette entre les différentes couches fonctionnelles.</p>
+
+    <h3 id="structure-projet">Structure du projet</h3>
+    <p>Le projet est organisé selon la convention Maven standard avec la structure suivante :</p>
+    <pre>src/
+  ├── main/
+  │   ├── java/
+  │   │   └── com/ticketing/
+  │   │       ├── config/       # Configuration Spring
+  │   │       ├── controller/   # Contrôleurs MVC
+  │   │       ├── model/        # Entités JPA
+  │   │       ├── repository/   # Interfaces d'accès aux données
+  │   │       ├── service/      # Services métier
+  │   │       │   └── impl/     # Implémentations des services
+  │   │       └── util/         # Classes utilitaires
+  │   └── resources/
+  │       ├── static/           # Ressources statiques (CSS, JS)
+  │       ├── templates/        # Templates Thymeleaf
+  │       │   ├── error/        # Pages d'erreur
+  │       │   ├── layout/       # Templates de mise en page
+  │       │   ├── payment/      # Pages de paiement
+  │       │   ├── reservation/  # Pages de réservation
+  │       │   └── ticket/       # Pages de tickets
+  │       └── application.properties # Configuration de l'application
+  └── test/                    # Tests unitaires et d'intégration</pre>
+
+    <!--<div class="image-placeholder">
+        [EMPLACEMENT POUR CAPTURE D'ÉCRAN : STRUCTURE DU PROJET]
+    </div>-->
+
+    <h3 id="couche-presentation">Couche de présentation</h3>
+    <p>La couche de présentation est construite avec le moteur de templates <strong>Thymeleaf</strong>, qui permet d'intégrer de façon élégante du HTML avec des expressions de langage pour générer des vues dynamiques côté serveur.</p>
+    <p>Caractéristiques principales :</p>
+    <ul>
+        <li><strong>Layouts réutilisables</strong> : Un template principal (<code>main.html</code>) définit la structure commune à toutes les pages</li>
+        <li><strong>Fragments modulaires</strong> : Des composants réutilisables pour la navigation, les formulaires, etc.</li>
+        <li><strong>Intégration Bootstrap</strong> : Pour un design responsive et moderne</li>
+        <li><strong>Validation côté client et serveur</strong> : Pour garantir l'intégrité des données</li>
+    </ul>
+
+    <!--<div class="image-placeholder">
+        [EMPLACEMENT POUR CAPTURE D'ÉCRAN : EXEMPLE DE TEMPLATE THYMELEAF]
+    </div>-->
+
+    <h3 id="couche-metier">Couche métier</h3>
+    <p>La couche métier est implémentée via des services Spring qui encapsulent la logique fonctionnelle :</p>
+    <ul>
+        <li><strong>Services</strong> : Interfaces définissant les contrats fonctionnels</li>
+        <li><strong>Implémentations</strong> : Classes concrètes implémentant ces interfaces</li>
+        <li><strong>Transactions</strong> : Gestion des transactions via les annotations <code>@Transactional</code></li>
+        <li><strong>Validation</strong> : Contrôle de la validité des données avant traitement</li>
+    </ul>
+    <p>Les principaux services incluent :</p>
+    <ul>
+        <li><code>UserService</code> : Gestion des utilisateurs et authentification</li>
+        <li><code>ShowService</code> : Gestion des spectacles</li>
+        <li><code>SeatService</code> : Gestion des places</li>
+        <li><code>ReservationService</code> : Gestion des réservations</li>
+        <li><code>PaymentService</code> : Gestion des paiements</li>
+    </ul>
+
+    <!--<div class="image-placeholder">
+        [EMPLACEMENT POUR CAPTURE D'ÉCRAN : EXEMPLE DE SERVICE]
+    </div>-->
+
+    <h3 id="couche-donnees">Couche d'accès aux données</h3>
+    <p>L'accès aux données est géré par <strong>Spring Data JPA</strong>, qui fournit une abstraction de haut niveau pour interagir avec la base de données relationnelle :</p>
+    <ul>
+        <li><strong>Entités JPA</strong> : Classes Java annotées représentant les tables de la base de données</li>
+        <li><strong>Repositories</strong> : Interfaces étendant <code>JpaRepository</code> pour les opérations CRUD</li>
+        <li><strong>Hibernate</strong> : Framework ORM utilisé par Spring Data JPA</li>
+        <li><strong>Mappings relationnels</strong> : Relations entre entités (OneToMany, ManyToOne, etc.)</li>
+    </ul>
+    <p>Les principales entités du modèle de données sont :</p>
+    <ul>
+        <li><code>User</code> : Utilisateurs de l'application</li>
+        <li><code>Show</code> : Spectacles disponibles à la réservation</li>
+        <li><code>Seat</code> : Places disponibles pour chaque spectacle</li>
+        <li><code>Reservation</code> : Réservations effectuées par les utilisateurs</li>
+        <li><code>Payment</code> : Informations de paiement des réservations</li>
+    </ul>
+
+    <h3 id="securite">Sécurité</h3>
+    <p>La sécurité de l'application est gérée par <strong>Spring Security</strong> :</p>
+    <ul>
+        <li><strong>Authentification</strong> : Système de login/mot de passe avec sessions</li>
+        <li><strong>Autorisation</strong> : Contrôle d'accès basé sur les rôles</li>
+        <li><strong>Protection CSRF</strong> : Contre les attaques de type Cross-Site Request Forgery</li>
+        <li><strong>Encodage des mots de passe</strong> : Utilisation de BCrypt pour le hachage sécurisé</li>
+    </ul>
+
+    <h2 id="fonctionnalites">2. Présentation des fonctionnalités implémentées</h2>
+
+    <h3 id="version-1">Version 1 : Fonctionnalités de base</h3>
+    <p>La première version de l'application se concentrait sur les fonctionnalités essentielles :</p>
+
+    <h4>Gestion des utilisateurs :</h4>
+    <ul>
+        <li>Inscription et connexion des utilisateurs</li>
+        <li>Profils utilisateurs basiques</li>
+        <li>Gestion des rôles (utilisateur standard, administrateur)</li>
+    </ul>
+
+    <h4>Catalogue de spectacles :</h4>
+    <ul>
+        <li>Consultation de la liste des spectacles disponibles</li>
+        <li>Affichage des détails d'un spectacle (titre, date, lieu, description)</li>
+        <li>Recherche simple de spectacles</li>
+    </ul>
+
+    <h4>Réservation simple :</h4>
+    <ul>
+        <li>Sélection d'un spectacle</li>
+        <li>Choix d'un siège disponible</li>
+        <li>Confirmation de réservation</li>
+    </ul>
+
+    <h4>Administration basique :</h4>
+    <ul>
+        <li>Ajout et modification de spectacles</li>
+        <li>Gestion des places disponibles</li>
+        <li>Visualisation des réservations</li>
+    </ul>
+
+    <h3 id="version-2">Version 2 : Fonctionnalités avancées</h3>
+    <p>La deuxième version a enrichi l'application avec des fonctionnalités plus avancées :</p>
+
+    <h4>Gestion des utilisateurs améliorée :</h4>
+    <ul>
+        <li>Profils utilisateurs enrichis (photo de profil, biographie)</li>
+        <li>Modification des informations personnelles</li>
+        <li>Historique d'activité utilisateur</li>
+    </ul>
+
+    <h4>Réservation et billetterie :</h4>
+    <ul>
+        <li>Processus de réservation simplifié en un clic</li>
+        <li>Génération et affichage des billets électroniques</li>
+        <li>Consultation de l'historique des réservations</li>
+        <li>Confirmation des paiements directement depuis la page de réservations</li>
+    </ul>
+
+    <!--<div class="image-placeholder">
+        [EMPLACEMENT POUR CAPTURE D'ÉCRAN : PAGE DE RÉSERVATIONS]
+    </div>-->
+
+    <h4>Paiement et confirmation :</h4>
+    <ul>
+        <li>Simulation de paiement intégrée</li>
+        <li>Confirmation et statut des paiements</li>
+        <li>Notifications de confirmation</li>
+    </ul>
+
+    <h4>Interface d'administration enrichie :</h4>
+    <ul>
+        <li>Tableaux de bord avec statistiques</li>
+        <li>Gestion avancée des spectacles et places</li>
+        <li>Rapports sur les ventes et réservations</li>
+    </ul>
+
+    <h4>Gestion des erreurs :</h4>
+    <ul>
+        <li>Pages d'erreur personnalisées</li>
+        <li>Mode de secours pour les pages critiques</li>
+        <li>Journalisation améliorée des erreurs</li>
+    </ul>
+
+    <h3 id="evolution-interfaces">Évolution des interfaces utilisateur</h3>
+    <p>L'interface utilisateur a connu plusieurs améliorations notables entre les versions :</p>
+
+    <h4>Version 1 :</h4>
+    <ul>
+        <li>Design simple et fonctionnel</li>
+        <li>Navigation de base</li>
+        <li>Formulaires standards</li>
+    </ul>
+
+    <h4>Version 2 :</h4>
+    <ul>
+        <li>Design moderne avec effets visuels avancés</li>
+        <li>Barre de navigation améliorée avec profil utilisateur</li>
+        <li>Cartes interactives pour les spectacles et réservations</li>
+        <li>Expérience utilisateur optimisée pour mobile</li>
+        <li>Messages de confirmation et d'erreur améliorés</li>
+        <li>Modes de débogage pour faciliter la résolution des problèmes</li>
+    </ul>
+
+    <!--<div class="image-placeholder">
+        [EMPLACEMENT POUR CAPTURE D'ÉCRAN : INTERFACE V1]
+    </div>
+
+    <div class="image-placeholder">
+        [EMPLACEMENT POUR CAPTURE D'ÉCRAN : INTERFACE V2]
+    </div>-->
+
+    <h2 id="analyse-comparative">3. Analyse comparative des frameworks</h2>
+
+    <h3 id="spring-boot">Spring Boot</h3>
+
+    <h4>Avantages :</h4>
+    <ul>
+        <li><strong>Productivité élevée</strong> : Configuration automatique qui réduit considérablement le code de configuration</li>
+        <li><strong>Écosystème complet</strong> : Intégration facile avec d'autres projets Spring (Security, Data, etc.)</li>
+        <li><strong>Flexibilité</strong> : Support de multiples bases de données, systèmes de templates, etc.</li>
+        <li><strong>Scalabilité</strong> : Conception orientée services facilitant la montée en charge</li>
+        <li><strong>Robustesse</strong> : Gestion des erreurs, transactions, et sécurité intégrée</li>
+    </ul>
+
+    <h4>Inconvénients :</h4>
+    <ul>
+        <li><strong>Courbe d'apprentissage</strong> : Framework riche mais complexe pour les débutants</li>
+        <li><strong>Surcharge de fonctionnalités</strong> : Peut être trop lourd pour des projets simples</li>
+        <li><strong>Démarrage initial lent</strong> : Temps de démarrage de l'application relativement long</li>
+        <li><strong>Consommation mémoire</strong> : Empreinte mémoire significative</li>
+    </ul>
+
+    <h3 id="frameworks-frontend">Frameworks front-end (Thymeleaf vs alternatives)</h3>
+
+    <h4>Thymeleaf :</h4>
+    <h5>Avantages :</h5>
+    <ul>
+        <li>Intégration native avec Spring Boot</li>
+        <li>Fichiers HTML valides même sans serveur (prototypage facile)</li>
+        <li>Syntaxe expressive et lisible</li>
+        <li>Fragments réutilisables</li>
+    </ul>
+    
+    <h5>Inconvénients :</h5>
+    <ul>
+        <li>Performance moins bonne que certaines alternatives</li>
+        <li>Syntaxe parfois verbeuse</li>
+        <li>Moins adapté aux applications web très interactives</li>
+    </ul>
+
+    <h4>Alternatives envisageables :</h4>
+
+    <h5>Vue.js + Spring Boot API :</h5>
+    <ul>
+        <li>Applications plus réactives et interactives</li>
+        <li>Séparation plus nette front-end/back-end</li>
+        <li>Développement parallèle plus facile</li>
+        <li>Plus complexe à mettre en place initialement</li>
+    </ul>
+
+    <h5>React + Spring Boot API :</h5>
+    <ul>
+        <li>Écosystème riche de composants</li>
+        <li>Performances optimales pour les interfaces complexes</li>
+        <li>Facilite le développement d'applications mobiles hybrides</li>
+        <li>Nécessite une API RESTful complète</li>
+    </ul>
+
+    <h3 id="avantages-inconvenients">Avantages et inconvénients</h3>
+
+    <h4>Approche monolithique avec Spring Boot + Thymeleaf :</h4>
+
+    <h5>Avantages :</h5>
+    <ul>
+        <li>Développement initial rapide</li>
+        <li>Déploiement simplifié (une seule application)</li>
+        <li>Cohérence du code et des données</li>
+        <li>Moins de problèmes de CORS ou d'authentification</li>
+    </ul>
+    
+    <h5>Inconvénients :</h5>
+    <ul>
+        <li>Scalabilité limitée pour des applications très complexes</li>
+        <li>Difficulté à intégrer des technologies front-end modernes</li>
+        <li>Développement front-end moins spécialisé</li>
+    </ul>
+
+    <h4>Approche microservices avec API Spring Boot + Front-end JavaScript :</h4>
+
+    <h5>Avantages :</h5>
+    <ul>
+        <li>Séparation claire des responsabilités</li>
+        <li>Équipes spécialisées front/back</li>
+        <li>Meilleure scalabilité et flexibilité</li>
+        <li>Interfaces utilisateur plus réactives</li>
+    </ul>
+    
+    <h5>Inconvénients :</h5>
+    <ul>
+        <li>Complexité accrue du développement initial</li>
+        <li>Gestion de l'authentification plus complexe</li>
+        <li>Déploiement et intégration continue plus complexes</li>
+    </ul>
+
+    <h3 id="difficultes">Difficultés rencontrées</h3>
+
+    <p>Lors du développement, plusieurs difficultés ont été rencontrées :</p>
+
+    <ol>
+        <li><strong>Gestion des sessions utilisateur</strong> : Résolution des problèmes d'authentification et d'association des réservations au bon utilisateur</li>
+
+        <li><strong>Compatibilité Thymeleaf</strong> : Adaptation à la syntaxe la plus récente et correction des expressions obsolètes</li>
+
+        <li><strong>Gestion des erreurs</strong> : Mise en place d'un système robuste de gestion des erreurs avec pages de secours</li>
+
+        <li><strong>Intégration des composants</strong> : Coordination des différentes couches de l'application, notamment pour le processus de réservation et de paiement</li>
+
+        <li><strong>Optimisation des performances</strong> : Structuration des requêtes pour éviter les problèmes de performance, notamment sur les pages de réservation</li>
+    </ol>
+
+    <!--<div class="image-placeholder">
+        [EMPLACEMENT POUR CAPTURE D'ÉCRAN : EXEMPLE D'ERREUR RÉSOLUE]
+    </div>-->
+
+    <h3 id="performance">Performance perçue</h3>
+
+    <p>Les performances de l'application ont été évaluées subjectivement :</p>
+
+    <ul>
+        <li><strong>Temps de chargement initial</strong> : Moyen (1-2 secondes au premier chargement)</li>
+        <li><strong>Réactivité de navigation</strong> : Bonne (transitions rapides entre les pages)</li>
+        <li><strong>Opérations CRUD</strong> : Très bonne (réponses rapides pour les opérations de base de données)</li>
+        <li><strong>Charge serveur</strong> : Modérée (utilisation mémoire significative mais stable)</li>
+    </ul>
+
+    <p>Des optimisations potentielles incluent :</p>
+    <ul>
+        <li>Mise en cache des données fréquemment consultées</li>
+        <li>Chargement asynchrone de certains composants</li>
+        <li>Pagination des listes longues</li>
+        <li>Optimisation des requêtes SQL</li>
+    </ul>
+
+    <h3 id="facilite">Facilité de développement</h3>
+
+    <p>L'expérience de développement avec les frameworks utilisés peut être évaluée comme suit :</p>
+
+    <ul>
+        <li><strong>Spring Boot</strong> : Bonne productivité après la phase d'apprentissage initiale. L'auto-configuration et les annotations réduisent considérablement le code nécessaire.</li>
+
+        <li><strong>Thymeleaf</strong> : Développement rapide pour des interfaces standard, mais devient plus complexe pour des interfaces très dynamiques.</li>
+
+        <li><strong>Spring Data JPA</strong> : Excellente productivité pour les opérations de base de données standards, mais nécessite plus d'efforts pour des requêtes complexes.</li>
+
+        <li><strong>Spring Security</strong> : Configuration initiale complexe mais offre ensuite une grande flexibilité et sécurité.</li>
+    </ul>
+
+    <h2 id="conclusion">4. Conclusion et recommandations</h2>
+
+    <h3>Bilan de l'architecture actuelle</h3>
+
+    <p>L'architecture monolithique basée sur Spring Boot et Thymeleaf s'est avérée efficace pour le développement de cette application de billetterie de taille moyenne. Elle offre un bon équilibre entre facilité de développement, performances et maintenabilité.</p>
+
+    <h3>Recommandations pour les évolutions futures</h3>
+
+    <ol>
+        <li>
+            <strong>Migration progressive vers une architecture de microservices</strong> :
+            <ul>
+                <li>Séparation du back-end en services dédiés (utilisateurs, spectacles, réservations, paiements)</li>
+                <li>Création d'une API REST complète</li>
+            </ul>
+        </li>
+
+        <li>
+            <strong>Modernisation du front-end</strong> :
+            <ul>
+                <li>Intégration d'un framework JavaScript moderne (Vue.js ou React)</li>
+                <li>Développement d'interfaces plus réactives et dynamiques</li>
+            </ul>
+        </li>
+
+        <li>
+            <strong>Améliorations fonctionnelles</strong> :
+            <ul>
+                <li>Intégration d'un système de paiement réel</li>
+                <li>Ajout de fonctionnalités sociales (partage, recommandations)</li>
+                <li>Implémentation d'un système de notifications en temps réel</li>
+            </ul>
+        </li>
+
+        <li>
+            <strong>Optimisations techniques</strong> :
+            <ul>
+                <li>Mise en place d'une solution de cache (Redis)</li>
+                <li>Intégration d'un moteur de recherche avancé (Elasticsearch)</li>
+                <li>Implémentation de tests automatisés plus complets</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h3>Mot de la fin</h3>
+
+    <p>L'application SpectaTicket démontre les capacités de Spring Boot pour développer rapidement des applications web robustes et fonctionnelles. La flexibilité de l'architecture permet d'envisager sereinement des évolutions futures pour répondre à des besoins croissants en termes de fonctionnalités et de charge.</p>
+
+    <p>Les choix technologiques actuels offrent un bon compromis pour une équipe de développement de taille moyenne, tout en laissant la porte ouverte à une modernisation progressive de l'architecture.</p>
+
+    <!--<h3>Captures d'écran supplémentaires</h3>
+
+    <div class="image-placeholder">
+        [EMPLACEMENT POUR CAPTURE D'ÉCRAN : PAGE D'ACCUEIL]
+    </div>
+
+    <div class="image-placeholder">
+        [EMPLACEMENT POUR CAPTURE D'ÉCRAN : PAGE DE PAIEMENT]
+    </div>
+
+    <div class="image-placeholder">
+        [EMPLACEMENT POUR CAPTURE D'ÉCRAN : PROFIL UTILISATEUR]
+    </div>
+
+    <p class="no-print"><em>Note : Ce document est optimisé pour l'impression. Utilisez la fonction d'impression de votre navigateur pour créer un fichier PDF.</em></p>
+--></body>
+</html>

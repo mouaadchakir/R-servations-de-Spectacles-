@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" 
-      th:replace="layout/main :: html(~{::title}, ~{::section})">
+      th:replace="~{layout/main :: html(~{::title}, ~{::section})}">
 <head>
     <title>Administration - Détails de Réservation</title>
 </head>
@@ -48,7 +48,7 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-4 fw-bold">Prix total:</div>
-                            <div class="col-md-8 text-primary fw-bold" th:text="${reservation.totalPrice} + ' DH'">50.00 DH</div>
+                            <div class="col-md-8 text-primary fw-bold" th:text="${reservation.totalPrice} + ' DH'">Prix</div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-4 fw-bold">Statut du paiement:</div>
@@ -138,3 +138,4 @@
     </section>
 </body>
 </html>
+

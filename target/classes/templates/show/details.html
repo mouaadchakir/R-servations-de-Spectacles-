@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" 
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      th:replace="layout/main :: html(~{::title}, ~{::section})">
+      th:replace="~{layout/main :: html(~{::title}, ~{::section})}">
 <head>
-    <title th:text="${'SpectaTicket - ' + show.title}">SpectaTicket - Détails du Spectacle</title>
+   SpectaTicket - Détails du Spectacle
 </head>
 <body>
     <section th:fragment="content">
@@ -83,3 +83,4 @@
     </section>
 </body>
 </html>
+

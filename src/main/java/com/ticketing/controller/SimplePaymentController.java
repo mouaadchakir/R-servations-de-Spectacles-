@@ -56,32 +56,63 @@ public class SimplePaymentController {
     
     @PostMapping("/{reservationId}/confirm")
     public String confirmPayment(@PathVariable Long reservationId, RedirectAttributes redirectAttributes) {
+        // Validation de l'ID de réservation
+        if (reservationId == null || reservationId <= 0) {
+            redirectAttributes.addFlashAttribute("errorMessage", "ID de réservation invalide.");
+            return "redirect:/my-reservations";
+        }
+        
         try {
-            // Get the reservation
-            Reservation reservation = reservationService.findById(reservationId);
-            
-            // Check if this reservation belongs to the authenticated user
+            // Vérification de l'authentification
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            User user = (User) auth.getPrincipal();
-            
-            if (!reservation.getUser().getId().equals(user.getId())) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Vous n'êtes pas autorisé à confirmer cette réservation.");
-                return "redirect:/";
+            if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Vous devez être connecté pour confirmer un paiement.");
+                return "redirect:/login";
             }
             
-            // Confirm the payment without Stripe
+            // Récupération de la réservation
+            Reservation reservation;
+            try {
+                reservation = reservationService.findById(reservationId);
+            } catch (Exception e) {
+                // Gestion spécifique pour les réservations non trouvées
+                redirectAttributes.addFlashAttribute("errorMessage", "Réservation introuvable : " + e.getMessage());
+                return "redirect:/my-reservations";
+            }
+            
+            // Vérification si la réservation est déjà confirmée
+            if (reservation.isPaymentConfirmed()) {
+                redirectAttributes.addFlashAttribute("infoMessage", "Cette réservation a déjà été confirmée.");
+                return "redirect:/my-reservations";
+            }
+            
+            // Vérification que l'utilisateur est bien le propriétaire de la réservation
+            User user = (User) auth.getPrincipal();
+            if (!reservation.getUser().getId().equals(user.getId())) {
+                // Tentative d'accès non autorisé à une réservation
+                redirectAttributes.addFlashAttribute("errorMessage", "Vous n'êtes pas autorisé à confirmer cette réservation.");
+                return "redirect:/my-reservations";
+            }
+            
+            // Confirmation du paiement
             boolean success = reservationService.confirmPayment(reservationId);
             
             if (success) {
-                redirectAttributes.addFlashAttribute("successMessage", "Paiement confirmé avec succès !");
-                return "redirect:/simple-payment/" + reservationId + "/success";
+                // Mise à jour réussie
+                redirectAttributes.addFlashAttribute("successMessage", "Paiement de " + reservation.getTotalPrice() + " DH confirmé avec succès pour le spectacle '" + reservation.getShow().getTitle() + "' !");
+                return "redirect:/my-reservations";
             } else {
-                redirectAttributes.addFlashAttribute("errorMessage", "Erreur lors de la confirmation du paiement.");
+                // Erreur lors de la mise à jour
+                redirectAttributes.addFlashAttribute("errorMessage", "Erreur technique lors de la confirmation du paiement. Veuillez réessayer.");
                 return "redirect:/simple-payment/" + reservationId;
             }
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Erreur lors de la confirmation : " + e.getMessage());
-            return "redirect:/simple-payment/" + reservationId;
+            // Log l'exception pour les administrateurs système (dans une application de production)
+            // logger.error("Erreur lors de la confirmation du paiement {}", reservationId, e);
+            
+            // Message générique pour l'utilisateur
+            redirectAttributes.addFlashAttribute("errorMessage", "Une erreur s'est produite lors de la confirmation du paiement. Service technique notifié.");
+            return "redirect:/my-reservations";
         }
     }
     

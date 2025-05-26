@@ -1,43 +1,75 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layout/main :: html(~{::title}, ~{::section})}">
 <head>
-    <meta charset="UTF-8">
-    <title>Réservation Simplifiée</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>SpectaTicket - Réservation de Billet</title>
     <style>
         .reservation-container {
             max-width: 800px;
             margin: 0 auto;
         }
         .show-card {
-            border-radius: 10px;
+            border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .show-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
         .show-image {
             height: 200px;
-            background-color: #eee;
+            background-color: #f8f9fa;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .show-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .show-image:hover img {
+            transform: scale(1.05);
         }
         .seat-item {
-            padding: 10px;
-            margin: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 15px;
+            margin: 8px;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
         }
         .seat-item:hover {
             background-color: #f8f9fa;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
         }
         .seat-item.selected {
-            background-color: #cfe2ff;
-            border-color: #0d6efd;
+            background-color: #e7f1ff;
+            border-color: #4a6cf7;
+            box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.25);
+        }
+        .seat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        .price-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #4a6cf7, #2541b2);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .vip-tag {
+            background: linear-gradient(135deg, #f7b84a, #b27625);
         }
     </style>
 </head>
@@ -101,7 +133,7 @@
                             
                             <p class="card-text" th:if="${show && show.price}">
                                 <i class="fas fa-tag me-2"></i>
-                                Prix: <strong th:text="${show.price} + ' DH'">50.00 DH</strong>
+                                Prix: <strong th:text="${show.price} + ' DH'">Prix</strong>
                             </p>
                         </div>
                     </div>

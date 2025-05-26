@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" 
-      th:replace="layout/main :: html(~{::title}, ~{::section})">
+      th:replace="~{layout/main :: html(~{::title}, ~{::section})}">
 <head>
-    <title>SpectaTicket - Spectacles</title>
+    SpectaTicket - Spectacles
 </head>
 <body>
     <section th:fragment="content">
@@ -63,3 +63,4 @@
     </section>
 </body>
 </html>
+

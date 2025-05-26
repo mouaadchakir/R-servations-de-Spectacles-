@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" 
-      th:replace="layout/main :: html(~{::title}, ~{::section})">
+      th:replace="~{layout/main :: html(~{::title}, ~{::section})}">
 <head>
     <title>SpectaTicket - Connexion</title>
 </head>
@@ -97,3 +97,4 @@
     </section>
 </body>
 </html>
+

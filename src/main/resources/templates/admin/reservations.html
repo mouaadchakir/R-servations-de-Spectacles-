@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" 
-      th:replace="layout/main :: html(~{::title}, ~{::section})">
+      th:replace="~{layout/main :: html(~{::title}, ~{::section})}">
 <head>
     <title>Administration - Gestion des Réservations</title>
 </head>
@@ -58,7 +58,7 @@
                                 <td th:text="${reservation.show.title}">Titre du spectacle</td>
                                 <td th:text="${reservation.seat.number}">A1</td>
                                 <td th:text="${#temporals.format(reservation.reservationDate, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
-                                <td th:text="${reservation.totalPrice} + ' DH'">50.00 DH</td>
+                                <td th:text="${reservation.totalPrice} + ' DH'">Prix</td>
                                 <td>
                                     <span th:if="${reservation.paymentConfirmed}" class="badge bg-success">Confirmé</span>
                                     <span th:unless="${reservation.paymentConfirmed}" class="badge bg-warning text-dark">En attente</span>
@@ -101,3 +101,4 @@
     </section>
 </body>
 </html>
+
