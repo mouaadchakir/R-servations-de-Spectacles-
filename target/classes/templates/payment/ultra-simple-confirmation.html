@@ -116,28 +116,31 @@
             <div class="ticket-body">
                 <div class="row">
                     <div class="col-md-8">
-                        <h3>Spectacle #<span th:text="${showId} ?: '2'">2</span></h3>
-                        <p class="lead">Catégorie Standard</p>
+                        <h3 th:text="${showTitle != null ? showTitle : 'Spectacle #' + (showId ?: '0')}">Titre du spectacle</h3>
+                        <p class="lead" th:if="${show != null}" th:text="${show.category != null ? show.category.name() : 'Standard'}">Catégorie Standard</p>
+                        <p class="lead" th:unless="${show != null}">Catégorie Standard</p>
                         
                         <div class="row mt-4">
                             <div class="col-sm-6">
                                 <p><strong><i class="far fa-calendar-alt me-2"></i>Date:</strong></p>
-                                <p id="eventDate">À venir</p>
+                                <p th:if="${date != null}" th:text="${#temporals.format(date, 'dd MMMM yyyy')}">À venir</p>
+                                <p th:unless="${date != null}">À venir</p>
                             </div>
                             <div class="col-sm-6">
                                 <p><strong><i class="far fa-clock me-2"></i>Heure:</strong></p>
-                                <p id="eventTime">20:00</p>
+                                <p th:if="${date != null}" th:text="${#temporals.format(date, 'HH:mm')}">20:00</p>
+                                <p th:unless="${date != null}">20:00</p>
                             </div>
                         </div>
                         
                         <div class="row mt-3">
                             <div class="col-sm-6">
                                 <p><strong><i class="fas fa-map-marker-alt me-2"></i>Lieu:</strong></p>
-                                <p>Salle Principale</p>
+                                <p th:text="${location != null ? location : 'Salle Principale'}">Salle Principale</p>
                             </div>
                             <div class="col-sm-6">
                                 <p><strong><i class="fas fa-chair me-2"></i>Siège:</strong></p>
-                                <p>A12 (Standard)</p>
+                                <p th:text="${seat != null ? seat : 'Au choix'}">Au choix</p>
                             </div>
                         </div>
                     </div>
@@ -150,7 +153,7 @@
                 </div>
             </div>
             <div class="ticket-footer text-center">
-                <p class="mb-0"><strong>Prix:</strong> <span th:text="${price} + ' DH'">Prix</span></p>
+                <p class="mb-0"><strong>Prix:</strong> <span th:text="${price != null && price matches '[0-9]+(\.[0-9]+)?' ? price + ' DH' : price}">Prix</span></p>
             </div>
         </div>
         

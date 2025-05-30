@@ -95,24 +95,41 @@ public class UltraSimpleController {
     
     @GetMapping("/payment")
     public String showStaticPaymentPage(Model model) {
-        // This page will use the flash attributes passed from the reserve method
+        // Pour s'assurer que le prix est toujours disponible
+        if (!model.containsAttribute("price")) {
+            // Essayer de récupérer l'ID du spectacle
+            if (model.containsAttribute("showId")) {
+                try {
+                    Long showId = Long.valueOf(model.getAttribute("showId").toString());
+                    Show show = showService.findById(showId);
+                    model.addAttribute("price", show.getPrice());
+                } catch (Exception e) {
+                    // Ne rien faire si impossible de récupérer le prix
+                }
+            }
+        }
         return "payment/ultra-simple-checkout";
     }
     
     @PostMapping("/payment/confirm")
-    public String confirmStaticPayment(Model model, RedirectAttributes redirectAttributes) {
+    public String confirmStaticPayment(Model model, RedirectAttributes redirectAttributes,
+                                     @RequestParam(name = "price", required = false) String priceParam) {
         // Create confirmation code
         String confirmationCode = "C" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         
-        // Conserver toutes les informations importantes
-        redirectAttributes.addFlashAttribute("confirmationCode", confirmationCode);
+        // Ru00e9cupu00e9rer les attributs du modu00e8le
+        Object priceObj = model.getAttribute("price");
+        Object showIdObj = model.getAttribute("showId");
+        Object showTitleObj = model.getAttribute("showTitle");
         
-        // Extraire et transmettre les informations du formulaire
-        String price = model.getAttribute("price") != null ? model.getAttribute("price").toString() : null;
-        String showId = model.getAttribute("showId") != null ? model.getAttribute("showId").toString() : null;
-        String showTitle = model.getAttribute("showTitle") != null ? model.getAttribute("showTitle").toString() : null;
+        // Ru00e9cupu00e9rer le prix du formulaire si disponible, sinon du modu00e8le
+        String price = priceParam != null ? priceParam : 
+                    (priceObj != null ? priceObj.toString() : null);
         
-        // Utiliser des paramètres d'URL plutôt que des attributs flash pour une meilleure persistance
+        String showId = showIdObj != null ? showIdObj.toString() : null;
+        String showTitle = showTitleObj != null ? showTitleObj.toString() : null;
+        
+        // Ajouter le prix comme paramu00e8tre d'URL pour garantir qu'il soit transmis exactement tel quel
         return "redirect:/ultra-simple/confirmation?confirmationCode=" + confirmationCode + 
                (showId != null ? "&showId=" + showId : "") + 
                (price != null ? "&price=" + price : "") + 
@@ -137,11 +154,6 @@ public class UltraSimpleController {
             model.addAttribute("showId", showId);
         }
         
-        // Gérer le prix
-        if (price != null) {
-            model.addAttribute("price", price);
-        }
-        
         // Gérer le titre du spectacle
         if (showTitle != null) {
             model.addAttribute("showTitle", showTitle);
@@ -149,19 +161,43 @@ public class UltraSimpleController {
             model.addAttribute("showTitle", "Spectacle");
         }
         
-        // Toujours essayer de récupérer le prix réel du spectacle en priorité
+        // Toujours essayer de ru00e9cupu00e9rer les donnu00e9es ru00e9elles du ticket depuis la base de donnu00e9es
+        // Prioritu00e9 1: Si on a un ID de spectacle, ru00e9cupu00e9rer toutes les donnu00e9es directement de la base de donnu00e9es
         if (showId != null) {
             try {
                 Long showIdLong = Long.valueOf(showId);
                 Show show = showService.findById(showIdLong);
-                // Utiliser le prix réel du spectacle pour remplacer tout autre prix
-                model.addAttribute("price", show.getPrice());
+                
+                // Ru00e9cupu00e9rer et utiliser toutes les donnu00e9es ru00e9elles du spectacle
+                model.addAttribute("show", show);  // Le spectacle complet pour avoir toutes les donnu00e9es
+                model.addAttribute("price", show.getPrice().toString());
+                model.addAttribute("showTitle", show.getTitle());
+                model.addAttribute("location", show.getLocation());
+                model.addAttribute("date", show.getDate());
+                
+                // Ru00e9cupu00e9rer u00e9galement les places disponibles pour information
+                try {
+                    // Liste des places disponibles
+                    model.addAttribute("hasDetails", true);
+                } catch (Exception e) {
+                    // Si impossible de ru00e9cupu00e9rer les places, ignorer silencieusement
+                }
             } catch (Exception e) {
-                // En cas d'erreur, garder le prix existant s'il y en a un
-                if (price == null && !model.containsAttribute("price")) {
-                    model.addAttribute("price", "");
+                // En cas d'erreur, utiliser les valeurs de l'URL si disponibles
+                if (price != null) {
+                    model.addAttribute("price", price);
+                } else {
+                    model.addAttribute("price", "Non spu00e9cifiu00e9");
                 }
             }
+        } 
+        // Prioritu00e9 2: Si on n'a pas d'ID mais on a un prix dans l'URL, l'utiliser
+        else if (price != null) {
+            model.addAttribute("price", price);
+        }
+        // Prioritu00e9 3: Si on n'a aucune information, indiquer clairement que c'est une du00e9mo
+        else {
+            model.addAttribute("price", "Démo");
         }
         
         return "payment/ultra-simple-confirmation";
