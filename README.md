@@ -1,3 +1,6 @@
+<h1>PAGE HOME</h1>
+<img src="images/image.png">
+
 # Système de Réservation de Spectacles avec Spring Boot
 
 Ce projet est un système complet de réservation de billets de spectacles construit avec Spring Boot. Il permet aux utilisateurs de rechercher des spectacles, réserver des billets, effectuer des paiements et télécharger leurs tickets.
